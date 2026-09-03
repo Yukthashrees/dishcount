@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: dishcount_postgres
+    environment:
+      POSTGRES_DB: dishcountdb
+      POSTGRES_USER: dishcount_user
+      POSTGRES_PASSWORD: dishcount_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dishcount_user -d dishcountdb"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: dishcount_backend
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      DATABASE_URL: jdbc:postgresql://postgres:5432/dishcountdb
+      DATABASE_USERNAME: dishcount_user
+      DATABASE_PASSWORD: dishcount_password
+      JWT_SECRET: dishcount_royal_digital_dining_super_secret_jwt_key_2026_dishcount_food_price_comparison
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
