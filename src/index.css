@@ -1,0 +1,110 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html, body {
+    background-color: #120E0C;
+    color: #F4EBDD;
+    font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
+    cursor: default;
+    user-select: none;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    letter-spacing: -0.025em;
+  }
+}
+
+/* Subtlest Noise Overlay */
+.noise-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.025'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 99;
+}
+
+/* Luxury Royal Glass Surface */
+.glass-luxury {
+  background: rgba(26, 20, 18, 0.85);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.95);
+}
+
+.glass-luxury-hover {
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.glass-luxury-hover:hover {
+  border-color: rgba(212, 175, 55, 0.6);
+  box-shadow: 0 20px 60px -10px rgba(212, 175, 55, 0.25);
+  transform: translateY(-2px);
+}
+
+/* Luxury Gold Stamp (Best Deal Seal) */
+.luxury-stamp {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.75rem;
+  border: 1.5px solid #D4AF37;
+  color: #D4AF37;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  background: rgba(212, 175, 55, 0.12);
+  border-radius: 4px;
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+}
+
+/* Dark Charcoal Paper Receipt */
+.dark-receipt {
+  background-color: #1A1412;
+  color: #F4EBDD;
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 19px,
+    rgba(250, 240, 225, 0.02) 20px
+  );
+  box-shadow: 0 30px 80px rgba(212, 175, 55, 0.25);
+}
+
+.receipt-zigzag-bottom {
+  mask-image: radial-gradient(circle at 10px 100%, transparent 8px, black 9px);
+  mask-size: 20px 100%;
+}
+
+/* Giant Display Typography */
+.text-hero-editorial {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(3.2rem, 7.5vw, 8.5rem);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  font-weight: 300;
+}
+
+/* Minimal Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #120E0C;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(212, 175, 55, 0.35);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #D4AF37;
+}

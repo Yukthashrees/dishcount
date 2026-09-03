@@ -1,0 +1,93 @@
+export const MOODS = [
+  {
+    id: 'rooftop-nights',
+    name: 'Rooftop Nights',
+    environment: 'Bengaluru skyline & evening lights',
+    description: 'Panoramic city lights, string pergolas, wood-fired tapas, and vibrant evening breeze.',
+    curatedCount: 31,
+    savingsText: 'Up to ₹220 saved tonight',
+    image: 'https://images.unsplash.com/photo-1578474846511-04ba529f0b88?auto=format&fit=crop&w=1000&q=80',
+    colorHex: '#457B9D',
+    glowColor: 'rgba(69, 123, 157, 0.4)',
+    ambientBg: '#0F151F',
+    badge: 'Skyline Dusk'
+  },
+  {
+    id: 'aesthetic',
+    name: 'Aesthetic Café',
+    environment: 'Pastel interior, plants & natural sunlight',
+    description: 'Minimalist ceramics, sun-dappled terrazzo tables, oat milk lattes, and books.',
+    curatedCount: 42,
+    savingsText: 'Up to ₹190 saved tonight',
+    image: 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=1000&q=80',
+    colorHex: '#E76F51',
+    glowColor: 'rgba(231, 111, 81, 0.4)',
+    ambientBg: '#191114',
+    badge: 'Design Lovers'
+  },
+  {
+    id: 'romantic',
+    name: 'Romantic Dinner',
+    environment: 'Candlelit tables & intimate atmosphere',
+    description: 'Dimly lit oak tables, wine glasses, velvet booths, and soft jazz acoustics.',
+    curatedCount: 28,
+    savingsText: 'Up to ₹240 saved tonight',
+    image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1000&q=80',
+    colorHex: '#E63946',
+    glowColor: 'rgba(230, 57, 70, 0.4)',
+    ambientBg: '#1C0D11',
+    badge: 'Intimate Evenings'
+  },
+  {
+    id: 'breakfast',
+    name: 'Breakfast Ritual',
+    environment: 'Morning sunlight, coffee & croissants',
+    description: 'Flaky butter croissants, single-origin espresso steam, golden sunlight, and fresh juices.',
+    curatedCount: 39,
+    savingsText: 'Up to ₹160 saved tonight',
+    image: 'https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?auto=format&fit=crop&w=1000&q=80',
+    colorHex: '#F4A261',
+    glowColor: 'rgba(244, 162, 97, 0.4)',
+    ambientBg: '#1A140E',
+    badge: 'Early Risers'
+  },
+  {
+    id: 'calm-quiet',
+    name: 'Calm & Quiet',
+    environment: 'Quiet courtyard & natural greenery',
+    description: 'Lush greenery, trickling water fountains, soft shadows, and peaceful soul recharge spaces.',
+    curatedCount: 35,
+    savingsText: 'Up to ₹175 saved tonight',
+    image: 'https://images.unsplash.com/photo-1445116572660-236099ec97a0?auto=format&fit=crop&w=1000&q=80',
+    colorHex: '#2A9D8F',
+    glowColor: 'rgba(42, 157, 143, 0.4)',
+    ambientBg: '#0D1A19',
+    badge: 'Mindful Sanctuary'
+  },
+  {
+    id: 'family-dining',
+    name: 'Family Dining',
+    environment: 'Large sharing table & warm feasts',
+    description: 'Large round tables, authentic multi-course family feasts, copper pots, and warm hospitality.',
+    curatedCount: 26,
+    savingsText: 'Up to ₹280 saved tonight',
+    image: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1000&q=80',
+    colorHex: '#E05A36',
+    glowColor: 'rgba(224, 90, 54, 0.4)',
+    ambientBg: '#1C0E0B',
+    badge: 'Grand Feast'
+  },
+  {
+    id: 'late-night',
+    name: 'Late Night',
+    environment: 'Moody neon lights & late-night bites',
+    description: 'Secluded alleyway diners, vintage neon signs, hot ramen bowls, and late-night cravings.',
+    curatedCount: 24,
+    savingsText: 'Up to ₹210 saved tonight',
+    image: 'https://images.unsplash.com/photo-1514933651103-005eec06c04b?auto=format&fit=crop&w=1000&q=80',
+    colorHex: '#9D4EDD',
+    glowColor: 'rgba(157, 78, 221, 0.4)',
+    ambientBg: '#150A1E',
+    badge: 'Midnight Bites'
+  }
+];
