@@ -62,15 +62,47 @@ export function App() {
     };
   }, []);
 
-  // Handle Search Execution
+  // Dynamic Search Handler supporting ANY query string (e.g. rolls, burgers, momos, etc.)
   const handleExecuteSearch = (query: string) => {
     setSearchQuery(query);
+    const q = query.trim().toLowerCase();
+
+    // Check existing mock database
     const matchedDish = MOCK_DISHES.find(
-      d => d.name.toLowerCase().includes(query.toLowerCase()) || 
-           d.category.toLowerCase().includes(query.toLowerCase())
-    ) || MOCK_DISHES[0];
-    
-    setActiveDish(matchedDish);
+      d => d.name.toLowerCase().includes(q) || 
+           d.category.toLowerCase().includes(q) ||
+           d.restaurantName.toLowerCase().includes(q)
+    );
+
+    if (matchedDish) {
+      setActiveDish(matchedDish);
+    } else {
+      // Dynamically generate a custom dish comparison for any searched item (e.g. "Rolls", "Shawarma", "KFC", etc.)
+      const formattedTitle = query.charAt(0).toUpperCase() + query.slice(1);
+      const basePrice = 220;
+
+      const dynamicDish: Dish = {
+        id: `dynamic-${Date.now()}`,
+        name: formattedTitle.includes('Roll') || formattedTitle.includes('roll') ? formattedTitle : `${formattedTitle} Special`,
+        restaurantName: 'Empire & Specialty Kitchens',
+        category: 'Popular Specialty',
+        cuisine: 'Street Food & Gourmet',
+        basePrice: basePrice,
+        image: 'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?auto=format&fit=crop&w=800&q=80',
+        rating: 4.6,
+        description: `Signature fresh ${query} prepared with premium ingredients and authentic culinary spices.`,
+        comparison: [
+          { platformId: 'magicpin', platformName: 'Magicpin', basePrice: basePrice, itemPrice: basePrice, deliveryFee: 20, platformFee: 4, packagingFee: 10, taxes: 11, discount: 50, finalPayablePrice: basePrice - 5, deliveryTimeMinutes: 22, available: true, couponCode: 'MAGICPIN50', scoreReason: 'Highest active discount code' },
+          { platformId: 'swish', platformName: 'SWISH', basePrice: basePrice, itemPrice: basePrice, deliveryFee: 15, platformFee: 3, packagingFee: 10, taxes: 11, discount: 35, finalPayablePrice: basePrice + 4, deliveryTimeMinutes: 12, available: true, couponCode: 'SWISHFAST', scoreReason: '12-minute ultra fast delivery' },
+          { platformId: 'eatsure', platformName: 'EatSure', basePrice: basePrice, itemPrice: basePrice, deliveryFee: 0, platformFee: 0, packagingFee: 0, taxes: 11, discount: 15, finalPayablePrice: basePrice + 16, deliveryTimeMinutes: 28, available: true, couponCode: 'SUREPASS', scoreReason: 'Zero delivery & packaging fees' },
+          { platformId: 'zomato', platformName: 'Zomato', basePrice: basePrice, itemPrice: basePrice, deliveryFee: 35, platformFee: 6, packagingFee: 10, taxes: 11, discount: 45, finalPayablePrice: basePrice + 17, deliveryTimeMinutes: 25, available: true, couponCode: 'ZOMATOGOLD', scoreReason: 'Gold discount applied' },
+          { platformId: 'swiggy', platformName: 'Swiggy', basePrice: basePrice, itemPrice: basePrice, deliveryFee: 39, platformFee: 7, packagingFee: 10, taxes: 11, discount: 40, finalPayablePrice: basePrice + 27, deliveryTimeMinutes: 24, available: true, couponCode: 'SWIGGYIT', scoreReason: 'Standard deal' },
+          { platformId: 'foodpanda', platformName: 'Foodpanda', basePrice: basePrice, itemPrice: basePrice, deliveryFee: 30, platformFee: 5, packagingFee: 10, taxes: 11, discount: 20, finalPayablePrice: basePrice + 36, deliveryTimeMinutes: 30, available: true, couponCode: 'PANDA20', scoreReason: 'Standard deal' },
+          { platformId: 'ubereats', platformName: 'Uber Eats', basePrice: basePrice, itemPrice: basePrice, deliveryFee: 45, platformFee: 8, packagingFee: 10, taxes: 11, discount: 0, finalPayablePrice: basePrice + 74, deliveryTimeMinutes: 32, available: true, couponCode: '', scoreReason: 'Base rate' }
+        ]
+      };
+      setActiveDish(dynamicDish);
+    }
 
     const el = document.getElementById('compare-section');
     if (el) el.scrollIntoView({ behavior: 'smooth' });

@@ -17,24 +17,40 @@ export const HeroSearch: React.FC<HeroSearchProps> = ({
 }) => {
   const [isFocused, setIsFocused] = useState(false);
 
-  const SUGGESTIONS = [
-    'Chicken Biryani',
-    'Hyderabadi Chicken Biryani',
-    'Chicken Biryani + Kebab Combo',
+  const POPULAR_SUGGESTIONS = [
+    'Chicken Dum Biryani',
+    'Kathi Rolls & Wraps',
+    'Paneer Tikka Roll',
     'Cheesy Truffle Pizza',
+    'Smash Gourmet Burger',
+    'Butter Chicken & Naan',
+    'Crispy Masala Dosa',
+    'Steamed Momos & Dim Sum',
     'Single Origin Cold Brew',
+    'Meghana Foods',
     'Empire Restaurant',
-    'La Piazza Trattoria'
+    'Truffles',
+    'Nagarjuna Restaurant',
+    'Toit Brewpub'
   ];
 
-  const filteredSuggestions = searchQuery.trim()
-    ? SUGGESTIONS.filter(s => s.toLowerCase().includes(searchQuery.toLowerCase()))
-    : SUGGESTIONS.slice(0, 4);
+  const q = searchQuery.trim();
+  
+  // Build dynamic suggestions list
+  let filteredSuggestions = q
+    ? POPULAR_SUGGESTIONS.filter(s => s.toLowerCase().includes(q.toLowerCase()))
+    : POPULAR_SUGGESTIONS.slice(0, 6);
+
+  // If user typed something custom (e.g. "rolls") that isn't in popular list, add their custom term to top
+  if (q && !filteredSuggestions.some(s => s.toLowerCase() === q.toLowerCase())) {
+    filteredSuggestions = [`${q.charAt(0).toUpperCase() + q.slice(1)}`, ...filteredSuggestions];
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      onExecuteSearch(searchQuery);
+      onExecuteSearch(searchQuery.trim());
+      setIsFocused(false);
     }
   };
 
@@ -108,7 +124,7 @@ export const HeroSearch: React.FC<HeroSearchProps> = ({
               onFocus={() => setIsFocused(true)}
               onBlur={() => setTimeout(() => setIsFocused(false), 200)}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search a dish or restaurant…"
+              placeholder="Search any dish or restaurant (e.g., Rolls, Burgers, Empire, Dosa)..."
               className="w-full bg-transparent text-lg sm:text-xl font-serif font-light text-[#F4EBDD] placeholder-[#8A7E76] focus:outline-none tracking-wide"
             />
 
@@ -134,10 +150,11 @@ export const HeroSearch: React.FC<HeroSearchProps> = ({
               transition={{ duration: 0.2 }}
               className="absolute left-0 right-0 top-full mt-2 rounded-xl bg-[#15100E] border border-[#C8A96B]/40 shadow-2xl overflow-hidden z-40 text-left backdrop-blur-2xl"
             >
-              <div className="p-3 text-[10px] tracking-[0.2em] uppercase font-sans text-[#C8A96B] border-b border-white/05 font-semibold">
-                CURATED SUGGESTIONS
+              <div className="p-3 text-[10px] tracking-[0.2em] uppercase font-sans text-[#C8A96B] border-b border-white/05 font-semibold flex items-center justify-between">
+                <span>CURATED SUGGESTIONS</span>
+                <span className="text-[#8A7E76] text-[9px]">PRESS ENTER TO SEARCH</span>
               </div>
-              <div className="py-2">
+              <div className="py-2 max-h-60 overflow-y-auto">
                 {filteredSuggestions.map((item, idx) => (
                   <button
                     key={idx}
@@ -146,10 +163,10 @@ export const HeroSearch: React.FC<HeroSearchProps> = ({
                       onExecuteSearch(item);
                       setIsFocused(false);
                     }}
-                    className="w-full px-5 py-3 text-left font-serif text-base text-[#F4EBDD]/90 hover:text-[#C8A96B] hover:bg-[#1B1512] transition-colors flex items-center justify-between"
+                    className="w-full px-5 py-3 text-left font-serif text-base text-[#F4EBDD]/90 hover:text-[#C8A96B] hover:bg-[#1B1512] transition-colors flex items-center justify-between group"
                   >
                     <span>{item}</span>
-                    <span className="text-[10px] font-sans tracking-widest text-[#C8A96B] uppercase font-semibold">COMPARE →</span>
+                    <span className="text-[10px] font-sans tracking-widest text-[#C8A96B] uppercase font-semibold group-hover:translate-x-1 transition-transform">COMPARE →</span>
                   </button>
                 ))}
               </div>
