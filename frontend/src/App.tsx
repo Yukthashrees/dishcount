@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import Lenis from 'lenis';
 
@@ -17,6 +17,7 @@ import { SavingsJournal } from './components/SavingsJournal';
 import { PlatformComparisonSection } from './components/PlatformComparisonSection';
 import { PriceAlertModal } from './components/PriceAlertModal';
 import { FavoritesDrawer } from './components/FavoritesDrawer';
+import { AuthModal } from './components/AuthModal';
 import { CustomCursor } from './components/CustomCursor';
 import { Footer } from './components/Footer';
 
@@ -40,6 +41,7 @@ export function App() {
   // Modals & Drawers
   const [isPriceAlertOpen, setIsPriceAlertOpen] = useState(false);
   const [isFavoritesOpen, setIsFavoritesOpen] = useState(false);
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
 
   // Smooth Scroll
   useEffect(() => {
@@ -85,6 +87,20 @@ export function App() {
     speedSliderVal > 60 ? 'FASTEST' : choiceMode
   );
 
+  const handlePlatformRedirect = (platformId: string) => {
+    const urls: Record<string, string> = {
+      swiggy: 'https://www.swiggy.com',
+      zomato: 'https://www.zomato.com',
+      magicpin: 'https://magicpin.in',
+      eatsure: 'https://www.eatsure.com',
+      swish: 'https://swish.app',
+      foodpanda: 'https://www.foodpanda.com',
+      ubereats: 'https://www.ubereats.com'
+    };
+    const target = urls[platformId.toLowerCase()] || `https://${platformId.toLowerCase()}.com`;
+    window.open(target, '_blank', 'noopener,noreferrer');
+  };
+
   return (
     <div className="min-h-screen bg-[#120E0C] text-[#F4EBDD] selection:bg-[#D4AF37]/30 selection:text-white transition-colors duration-500 relative">
       
@@ -113,7 +129,7 @@ export function App() {
         location={location}
         onChangeLocation={() => setLocation(location === 'Bengaluru' ? 'Mumbai' : 'Bengaluru')}
         onOpenFavorites={() => setIsFavoritesOpen(true)}
-        onOpenProfile={() => setIsFavoritesOpen(true)}
+        onOpenProfile={() => setIsAuthOpen(true)}
         onNavigateSection={handleNavigateSection}
       />
 
@@ -133,9 +149,7 @@ export function App() {
         <TruePriceComparison
           dish={activeDish}
           sortedPlatforms={sortedPlatforms}
-          onOpenPlatform={(p) => {
-            alert(`Opening ${p.platformName} for ${activeDish.name} at ₹${p.finalPayablePrice}`);
-          }}
+          onOpenPlatform={(p) => handlePlatformRedirect(p.platformId)}
         />
 
         {/* Price vs Speed Interactive Slider */}
@@ -198,6 +212,12 @@ export function App() {
         isOpen={isFavoritesOpen}
         onClose={() => setIsFavoritesOpen(false)}
         onSelectDish={(dishName) => handleExecuteSearch(dishName)}
+      />
+
+      {/* Auth Modal (Login / Register) */}
+      <AuthModal
+        isOpen={isAuthOpen}
+        onClose={() => setIsAuthOpen(false)}
       />
 
       {/* Royal Editorial Footer */}
