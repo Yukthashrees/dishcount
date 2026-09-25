@@ -6,6 +6,8 @@ import { OpeningExperience } from './components/OpeningExperience';
 import { Navigation } from './components/Navigation';
 import { HeroSearch } from './components/HeroSearch';
 import { TruePriceComparison } from './components/TruePriceComparison';
+import { MultiRestaurantSearchResults } from './components/MultiRestaurantSearchResults';
+import { RestaurantMenuModal } from './components/RestaurantMenuModal';
 import { SmartChoiceSelector } from './components/SmartChoiceSelector';
 import { PriceHistoryChart } from './components/PriceHistoryChart';
 import { MoodLineSpectrum } from './components/MoodLineSpectrum';
@@ -21,8 +23,8 @@ import { AuthModal } from './components/AuthModal';
 import { CustomCursor } from './components/CustomCursor';
 import { Footer } from './components/Footer';
 
-import { MOCK_DISHES, MOCK_RESTAURANTS } from './data/mockDatabase';
-import { Dish, Restaurant, ChoiceMode } from './types';
+import { MOCK_DISHES, DETAILED_RESTAURANTS, DetailedRestaurant } from './data/mockDatabase';
+import { Dish, ChoiceMode } from './types';
 import { TruePriceEngine } from './services/truePriceEngine';
 
 export function App() {
@@ -30,9 +32,14 @@ export function App() {
   const [location, setLocation] = useState('Bengaluru');
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Active Selected Dish & Restaurant
+  // Active Selected Dish
   const [activeDish, setActiveDish] = useState<Dish>(MOCK_DISHES[0]);
-  const [, setActiveRestaurant] = useState<Restaurant>(MOCK_RESTAURANTS[0]);
+
+  // Full Restaurant Menu Modal State
+  const [selectedMenuRestaurant, setSelectedMenuRestaurant] = useState<DetailedRestaurant | null>(null);
+
+  // Multi-Restaurant Search Results State
+  const [searchResultsRestaurants, setSearchResultsRestaurants] = useState<DetailedRestaurant[]>([]);
 
   // Choice Mode & Speed Slider
   const [choiceMode] = useState<ChoiceMode>('CHEAPEST');
@@ -62,12 +69,21 @@ export function App() {
     };
   }, []);
 
-  // Dynamic Search Handler supporting ANY query string (e.g. rolls, burgers, momos, etc.)
+  // Dynamic Search Handler for Dish & Multi-Restaurant Lookup
   const handleExecuteSearch = (query: string) => {
     setSearchQuery(query);
     const q = query.trim().toLowerCase();
 
-    // Check existing mock database
+    // 1. Find all matching restaurants serving this dish/cuisine
+    const matchingRestaurants = DETAILED_RESTAURANTS.filter(r =>
+      r.name.toLowerCase().includes(q) ||
+      r.cuisine.some(c => c.toLowerCase().includes(q)) ||
+      r.fullMenu.some(m => m.name.toLowerCase().includes(q) || m.category.toLowerCase().includes(q))
+    );
+
+    setSearchResultsRestaurants(matchingRestaurants.length > 0 ? matchingRestaurants : DETAILED_RESTAURANTS);
+
+    // 2. Set active dish comparison
     const matchedDish = MOCK_DISHES.find(
       d => d.name.toLowerCase().includes(q) || 
            d.category.toLowerCase().includes(q) ||
@@ -77,34 +93,31 @@ export function App() {
     if (matchedDish) {
       setActiveDish(matchedDish);
     } else {
-      // Dynamically generate a custom dish comparison for any searched item (e.g. "Rolls", "Shawarma", "KFC", etc.)
       const formattedTitle = query.charAt(0).toUpperCase() + query.slice(1);
       const basePrice = 220;
 
       const dynamicDish: Dish = {
         id: `dynamic-${Date.now()}`,
         name: formattedTitle.includes('Roll') || formattedTitle.includes('roll') ? formattedTitle : `${formattedTitle} Special`,
-        restaurantName: 'Empire & Specialty Kitchens',
+        restaurantName: matchingRestaurants.length > 0 ? matchingRestaurants[0].name : 'Empire & Specialty Kitchens',
         category: 'Popular Specialty',
         cuisine: 'Street Food & Gourmet',
         basePrice: basePrice,
         image: 'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?auto=format&fit=crop&w=800&q=80',
-        rating: 4.6,
+        rating: 4.8,
         description: `Signature fresh ${query} prepared with premium ingredients and authentic culinary spices.`,
         comparison: [
-          { platformId: 'magicpin', platformName: 'Magicpin', basePrice: basePrice, itemPrice: basePrice, deliveryFee: 20, platformFee: 4, packagingFee: 10, taxes: 11, discount: 50, finalPayablePrice: basePrice - 5, deliveryTimeMinutes: 22, available: true, couponCode: 'MAGICPIN50', scoreReason: 'Highest active discount code' },
-          { platformId: 'swish', platformName: 'SWISH', basePrice: basePrice, itemPrice: basePrice, deliveryFee: 15, platformFee: 3, packagingFee: 10, taxes: 11, discount: 35, finalPayablePrice: basePrice + 4, deliveryTimeMinutes: 12, available: true, couponCode: 'SWISHFAST', scoreReason: '12-minute ultra fast delivery' },
-          { platformId: 'eatsure', platformName: 'EatSure', basePrice: basePrice, itemPrice: basePrice, deliveryFee: 0, platformFee: 0, packagingFee: 0, taxes: 11, discount: 15, finalPayablePrice: basePrice + 16, deliveryTimeMinutes: 28, available: true, couponCode: 'SUREPASS', scoreReason: 'Zero delivery & packaging fees' },
-          { platformId: 'zomato', platformName: 'Zomato', basePrice: basePrice, itemPrice: basePrice, deliveryFee: 35, platformFee: 6, packagingFee: 10, taxes: 11, discount: 45, finalPayablePrice: basePrice + 17, deliveryTimeMinutes: 25, available: true, couponCode: 'ZOMATOGOLD', scoreReason: 'Gold discount applied' },
-          { platformId: 'swiggy', platformName: 'Swiggy', basePrice: basePrice, itemPrice: basePrice, deliveryFee: 39, platformFee: 7, packagingFee: 10, taxes: 11, discount: 40, finalPayablePrice: basePrice + 27, deliveryTimeMinutes: 24, available: true, couponCode: 'SWIGGYIT', scoreReason: 'Standard deal' },
-          { platformId: 'foodpanda', platformName: 'Foodpanda', basePrice: basePrice, itemPrice: basePrice, deliveryFee: 30, platformFee: 5, packagingFee: 10, taxes: 11, discount: 20, finalPayablePrice: basePrice + 36, deliveryTimeMinutes: 30, available: true, couponCode: 'PANDA20', scoreReason: 'Standard deal' },
-          { platformId: 'ubereats', platformName: 'Uber Eats', basePrice: basePrice, itemPrice: basePrice, deliveryFee: 45, platformFee: 8, packagingFee: 10, taxes: 11, discount: 0, finalPayablePrice: basePrice + 74, deliveryTimeMinutes: 32, available: true, couponCode: '', scoreReason: 'Base rate' }
+          { platformId: 'magicpin', platformName: 'Magicpin', logo: '🟣', status: 'BEST PRICE', statusDetail: 'Highest active discount', basePrice: basePrice, restaurantDiscount: 30, couponDiscount: 25, deliveryFee: 20, platformFee: 4, taxes: 11, packagingFee: 10, cashback: 15, finalPayablePrice: basePrice - 5, deliveryTimeMinutes: 22, available: true, couponCode: 'MAGICPIN50', scoreReason: 'Cheapest overall rate' },
+          { platformId: 'swish', platformName: 'SWISH', logo: '⚡', status: 'FASTEST', statusDetail: '10-minute dispatch', basePrice: basePrice, restaurantDiscount: 20, couponDiscount: 10, deliveryFee: 15, platformFee: 3, taxes: 11, packagingFee: 10, cashback: 0, finalPayablePrice: basePrice + 4, deliveryTimeMinutes: 10, available: true, couponCode: 'SWISHFAST', scoreReason: '10-minute lightning dispatch' },
+          { platformId: 'eatsure', platformName: 'EatSure', logo: '🛡️', status: 'AVAILABLE', statusDetail: 'Zero platform fee', basePrice: basePrice, itemPrice: basePrice, deliveryFee: 0, platformFee: 0, packagingFee: 0, taxes: 11, discount: 15, finalPayablePrice: basePrice + 16, deliveryTimeMinutes: 28, available: true, couponCode: 'SUREPASS', scoreReason: 'Zero platform fee guarantee' },
+          { platformId: 'zomato', platformName: 'Zomato', logo: '🔴', status: 'AVAILABLE', statusDetail: 'Gold discount', basePrice: basePrice, restaurantDiscount: 25, couponDiscount: 15, deliveryFee: 30, platformFee: 5, taxes: 11, packagingFee: 10, cashback: 0, finalPayablePrice: basePrice + 17, deliveryTimeMinutes: 22, available: true, couponCode: 'ZOMATOGOLD', scoreReason: 'Zomato Gold discount' },
+          { platformId: 'swiggy', platformName: 'Swiggy', logo: '🟠', status: 'AVAILABLE', statusDetail: 'Swiggy One', basePrice: basePrice, restaurantDiscount: 20, couponDiscount: 10, deliveryFee: 35, platformFee: 6, taxes: 11, packagingFee: 10, cashback: 0, finalPayablePrice: basePrice + 27, deliveryTimeMinutes: 24, available: true, couponCode: 'SWIGGYIT', scoreReason: 'Standard deal' }
         ]
       };
       setActiveDish(dynamicDish);
     }
 
-    const el = document.getElementById('compare-section');
+    const el = document.getElementById('search-results-section') || document.getElementById('compare-section');
     if (el) el.scrollIntoView({ behavior: 'smooth' });
   };
 
@@ -177,6 +190,21 @@ export function App() {
           onChangeLocation={() => setLocation(location === 'Bengaluru' ? 'Mumbai' : 'Bengaluru')}
         />
 
+        {/* Multi-Restaurant Search Results View (Requirement 2) */}
+        {searchQuery && (
+          <div id="search-results-section">
+            <MultiRestaurantSearchResults
+              query={searchQuery}
+              restaurants={searchResultsRestaurants}
+              onSelectRestaurantForMenu={(rest) => setSelectedMenuRestaurant(rest)}
+              onSelectDishForComparison={(dish) => {
+                setActiveDish(dish);
+                handleNavigateSection('compare-section');
+              }}
+            />
+          </div>
+        )}
+
         {/* TRUE PRICE Engine Comparison Section */}
         <TruePriceComparison
           dish={activeDish}
@@ -206,15 +234,12 @@ export function App() {
         {/* Group Order Calculator */}
         <GroupOrderCalculator />
 
-        {/* Restaurant Discovery ("Where Should You Eat?") */}
+        {/* Restaurant Discovery ("Where Should You Eat?") (Requirement 1) */}
         <RestaurantDiscovery
-          restaurants={MOCK_RESTAURANTS}
+          restaurants={DETAILED_RESTAURANTS}
           onSelectRestaurant={(rest) => {
-            setActiveRestaurant(rest);
-            if (rest.popularDishes && rest.popularDishes.length > 0) {
-              setActiveDish(rest.popularDishes[0]);
-            }
-            handleNavigateSection('compare-section');
+            const detailed = DETAILED_RESTAURANTS.find(r => r.id === rest.id) || DETAILED_RESTAURANTS[0];
+            setSelectedMenuRestaurant(detailed);
           }}
         />
 
@@ -229,6 +254,17 @@ export function App() {
       {/* Ask DISHCOUNT AI Assistant Overlay */}
       <AskDishcountAI
         onCompareDish={(dishName) => handleExecuteSearch(dishName)}
+      />
+
+      {/* Full Restaurant Menu Booklet Modal (Requirement 1) */}
+      <RestaurantMenuModal
+        restaurant={selectedMenuRestaurant}
+        isOpen={!!selectedMenuRestaurant}
+        onClose={() => setSelectedMenuRestaurant(null)}
+        onSelectDishForComparison={(dish) => {
+          setActiveDish(dish);
+          handleNavigateSection('compare-section');
+        }}
       />
 
       {/* Price Alert Modal */}
