@@ -47,7 +47,7 @@ export const MOCK_DISHES: Dish[] = [
   },
   {
     id: 'dish-2',
-    restaurantId: 'rest-4',
+    restaurantId: 'fine-1',
     restaurantName: 'La Piazza Trattoria',
     name: 'Cheesy Truffle Pizza',
     description: '72-hour sourdough crust, San Marzano tomatoes, fresh burrata, wild porcini & black truffle oil.',
@@ -65,7 +65,7 @@ export const MOCK_DISHES: Dish[] = [
   },
   {
     id: 'dish-3',
-    restaurantId: 'rest-[#cafe-1]',
+    restaurantId: 'cafe-1',
     restaurantName: 'Subko Craft Bakehouse',
     name: 'Single Origin Iced Cold Brew',
     description: 'Double shot specialty espresso extracted over oat milk paired with warm house cardamom knot.',
@@ -104,7 +104,11 @@ export const DETAILED_RESTAURANTS: DetailedRestaurant[] = [
     fullMenu: [
       { id: 'm1', name: 'Chicken Dum Biryani', description: 'Aged long-grain Basmati rice with succulent chicken & saffron ghee.', category: 'Biryani Specialties', price: 320, rating: 4.8, isVeg: false, image: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=800&q=80', bestPlatform: 'Magicpin', bestPrice: 307 },
       { id: 'm2', name: 'Empire Special Chicken Kathi Roll', description: 'Flaky paratha loaded with spiced grilled chicken tikka, eggs & green chutney.', category: 'Starters & Rolls', price: 210, rating: 4.7, isVeg: false, image: 'https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=800&q=80', bestPlatform: 'Magicpin', bestPrice: 195 },
-      { id: 'm3', name: 'Paneer Tikka Roll', description: 'Charcoal grilled cottage cheese cubes wrapped in layered rumali roti.', category: 'Starters & Rolls', price: 190, rating: 4.6, isVeg: true, image: 'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?auto=format&fit=crop&w=800&q=80', bestPlatform: 'SWISH', bestPrice: 178 }
+      { id: 'm3', name: 'Paneer Tikka Roll', description: 'Charcoal grilled cottage cheese cubes wrapped in layered rumali roti.', category: 'Starters & Rolls', price: 190, rating: 4.6, isVeg: true, image: 'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?auto=format&fit=crop&w=800&q=80', bestPlatform: 'SWISH', bestPrice: 178 },
+      { id: 'm4', name: 'Mutton Shahi Biryani', description: 'Tender lamb chops layered with aromatic spiced basmati rice and saffron.', category: 'Biryani Specialties', price: 420, rating: 4.9, isVeg: false, image: 'https://images.unsplash.com/photo-1589302168068-964664d93dc0?auto=format&fit=crop&w=800&q=80', bestPlatform: 'Zomato', bestPrice: 395 },
+      { id: 'm5', name: 'Butter Chicken Masala', description: 'Velvety rich tomato butter gravy infused with roasted fenugreek & cream.', category: 'Main Course Curry', price: 340, rating: 4.8, isVeg: false, image: 'https://images.unsplash.com/photo-1588166524941-3bf61a9c41db?auto=format&fit=crop&w=800&q=80', bestPlatform: 'EatSure', bestPrice: 310 },
+      { id: 'm6', name: 'Garlic Butter Naan', description: 'Tandoor baked soft flatbread brushed with fresh garlic & melted butter.', category: 'Breads & Accompaniments', price: 65, rating: 4.5, isVeg: true, image: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=800&q=80', bestPlatform: 'Magicpin', bestPrice: 55 },
+      { id: 'm7', name: 'Royal Shahi Tukda', description: 'Crispy fried bread soaked in saffron rabri topped with silver foil & pistachio.', category: 'Beverages & Desserts', price: 150, rating: 4.9, isVeg: true, image: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&w=800&q=80', bestPlatform: 'Swiggy', bestPrice: 135 }
     ]
   },
   {
@@ -123,10 +127,12 @@ export const DETAILED_RESTAURANTS: DetailedRestaurant[] = [
     bestPlatform: 'SWISH',
     startingFinalPrice: 295,
     popularDishes: [MOCK_DISHES[0]],
-    menuCategories: ['Biryani Special', 'Andhra Starters', 'Curries & Meals'],
+    menuCategories: ['Biryani Special', 'Andhra Starters', 'Curries & Meals', 'Beverages'],
     fullMenu: [
       { id: 'mf1', name: 'Meghana Special Chicken Biryani', description: 'Signature spicy Guntur chili chicken layered with aromatic rice.', category: 'Biryani Special', price: 330, rating: 4.9, isVeg: false, image: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=800&q=80', bestPlatform: 'SWISH', bestPrice: 295 },
-      { id: 'mf2', name: 'Boneless Chicken 65', description: 'Deep fried crispy chicken cubes tossed in spicy curry leaves & yogurt.', category: 'Andhra Starters', price: 290, rating: 4.8, isVeg: false, image: 'https://images.unsplash.com/photo-1610057099443-fde8c4d50f91?auto=format&fit=crop&w=800&q=80', bestPlatform: 'Magicpin', bestPrice: 260 }
+      { id: 'mf2', name: 'Boneless Chicken 65', description: 'Deep fried crispy chicken cubes tossed in spicy curry leaves & yogurt.', category: 'Andhra Starters', price: 290, rating: 4.8, isVeg: false, image: 'https://images.unsplash.com/photo-1610057099443-fde8c4d50f91?auto=format&fit=crop&w=800&q=80', bestPlatform: 'Magicpin', bestPrice: 260 },
+      { id: 'mf3', name: 'Paneer Biryani', description: 'Marinated cottage cheese cooked with aromatic Andhra green chili gravy.', category: 'Biryani Special', price: 290, rating: 4.7, isVeg: true, image: 'https://images.unsplash.com/photo-1631452180519-c014fe946bc7?auto=format&fit=crop&w=800&q=80', bestPlatform: 'Zomato', bestPrice: 270 },
+      { id: 'mf4', name: 'Guntur Chili Chicken Fry', description: 'Fiery dry chicken fry infused with ground red chilies & peppercorns.', category: 'Andhra Starters', price: 310, rating: 4.9, isVeg: false, image: 'https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=800&q=80', bestPlatform: 'EatSure', bestPrice: 285 }
     ]
   },
   {
@@ -148,6 +154,50 @@ export const DETAILED_RESTAURANTS: DetailedRestaurant[] = [
     menuCategories: ['Andhra Thali Meals', 'Biryani', 'Starters'],
     fullMenu: [
       { id: 'ng1', name: 'Nagarjuna Royal Andhra Meal', description: 'Banana leaf feast with spicy pappu, sambar, rasam, curries, & pure ghee.', category: 'Andhra Thali Meals', price: 290, rating: 4.9, isVeg: true, image: 'https://images.unsplash.com/photo-1610057099443-fde8c4d50f91?auto=format&fit=crop&w=800&q=80', bestPlatform: 'Zomato', bestPrice: 260 }
+    ]
+  },
+  {
+    id: 'rest-4',
+    name: 'MTR 1924 (Mavalli Tiffin Room)',
+    cuisine: ['Heritage South Indian', 'Rava Dosa', 'Filter Coffee'],
+    location: 'Lalbagh / MG Road, Bengaluru',
+    area: 'MG Road / Church Street',
+    distance: '2.2 km',
+    rating: 4.9,
+    ratingCount: '9.1k',
+    venueType: 'RESTAURANT',
+    moods: ['Quiet', 'Cozy', 'Social'],
+    isFamous: true,
+    image: 'https://images.unsplash.com/photo-1630383249896-424e482df921?auto=format&fit=crop&w=1200&q=80',
+    bestPlatform: 'Swiggy',
+    startingFinalPrice: 110,
+    popularDishes: [],
+    menuCategories: ['Heritage Tiffins', 'Crispy Dosa', 'Beverages'],
+    fullMenu: [
+      { id: 'mtr1', name: 'MTR Pure Ghee Masala Dosa', description: 'Golden crispy red rice dosa stuffed with spiced potato palya & pure cow ghee.', category: 'Crispy Dosa', price: 135, rating: 4.9, isVeg: true, image: 'https://images.unsplash.com/photo-1630383249896-424e482df921?auto=format&fit=crop&w=800&q=80', bestPlatform: 'Swiggy', bestPrice: 115 },
+      { id: 'mtr2', name: 'Authentic Rava Idli with Saagu', description: 'MTR invented fluffy semolina idli served with potato saagu & chutney.', category: 'Heritage Tiffins', price: 110, rating: 4.8, isVeg: true, image: 'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=800&q=80', bestPlatform: 'Zomato', bestPrice: 95 }
+    ]
+  },
+  {
+    id: 'rest-5',
+    name: 'Truffles Gourmet Burgers',
+    cuisine: ['American Burgers', 'Steaks', 'Thick Shakes'],
+    location: 'Koramangala, Bengaluru',
+    area: 'Koramangala',
+    distance: '0.9 km',
+    rating: 4.8,
+    ratingCount: '12k',
+    venueType: 'RESTAURANT',
+    moods: ['Social', 'Cozy', 'Late Night'],
+    isFamous: true,
+    image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=1200&q=80',
+    bestPlatform: 'SWISH',
+    startingFinalPrice: 220,
+    popularDishes: [],
+    menuCategories: ['Gourmet Burgers', 'Crispy Fries & Starters', 'Thick Milkshakes'],
+    fullMenu: [
+      { id: 'tr1', name: 'Truffles All-American Cheese Burger', description: 'Juicy grilled beef patty loaded with melted cheddar, bacon & house aioli.', category: 'Gourmet Burgers', price: 290, rating: 4.9, isVeg: false, image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=800&q=80', bestPlatform: 'SWISH', bestPrice: 245 },
+      { id: 'tr2', name: 'Peri Peri Chicken Burger', description: 'Spicy peri-peri marinated fried chicken breast with jalapeño slaw.', category: 'Gourmet Burgers', price: 260, rating: 4.8, isVeg: false, image: 'https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=800&q=80', bestPlatform: 'Magicpin', bestPrice: 220 }
     ]
   },
 
@@ -242,23 +292,23 @@ export const DETAILED_RESTAURANTS: DetailedRestaurant[] = [
   },
   {
     id: 'cafe-3',
-    name: 'Third Wave Coffee',
-    cuisine: ['Artisanal Coffee', 'Warm Sandwiches', 'Cozy Cafe Workspaces'],
-    location: 'HSR Layout, Bengaluru',
-    area: 'HSR Layout',
-    distance: '1.3 km',
-    rating: 4.7,
-    ratingCount: '3.4k',
+    name: 'Corner House Ice Cream',
+    cuisine: ['Desserts', 'Death By Chocolate', 'Sundiaes'],
+    location: 'Indiranagar, Bengaluru',
+    area: 'Indiranagar',
+    distance: '0.9 km',
+    rating: 4.9,
+    ratingCount: '15k',
     venueType: 'CAFE',
-    moods: ['Quiet', 'Cozy'],
-    isFamous: false,
-    image: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=1200&q=80',
+    moods: ['Cozy', 'Social', 'Late Night'],
+    isFamous: true,
+    image: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=1200&q=80',
     bestPlatform: 'SWISH',
     startingFinalPrice: 210,
     popularDishes: [],
-    menuCategories: ['Espresso & Brews', 'Gourmet Sandwiches'],
+    menuCategories: ['Legendary Sundaes', 'Thick Milkshakes'],
     fullMenu: [
-      { id: 'tw1', name: 'Vietnamese Shaken Iced Coffee', description: 'Condensed milk espresso shaken over ice cubes.', category: 'Espresso & Brews', price: 230, rating: 4.8, isVeg: true, image: 'https://images.unsplash.com/photo-1461023058943-07fcbe16d735?auto=format&fit=crop&w=800&q=80', bestPlatform: 'SWISH', bestPrice: 195 }
+      { id: 'ch1', name: 'Death By Chocolate (DBC)', description: 'Rich chocolate cake layered with vanilla ice cream, hot chocolate fudge, nuts & cherry.', category: 'Legendary Sundaes', price: 260, rating: 4.9, isVeg: true, image: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=800&q=80', bestPlatform: 'SWISH', bestPrice: 220 }
     ]
   },
 
