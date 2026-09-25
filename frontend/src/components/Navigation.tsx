@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, User } from 'lucide-react';
+import { Search, User, MapPin } from 'lucide-react';
 
 interface NavigationProps {
   location: string;
@@ -10,6 +10,8 @@ interface NavigationProps {
 }
 
 export const Navigation: React.FC<NavigationProps> = ({
+  location,
+  onChangeLocation,
   onOpenProfile,
   onNavigateSection
 }) => {
@@ -26,7 +28,7 @@ export const Navigation: React.FC<NavigationProps> = ({
   const navLinks = [
     { id: 'hero-section', label: 'Explore' },
     { id: 'compare-section', label: 'Compare' },
-    { id: 'discover-section', label: 'Discover' },
+    { id: 'discover-section', label: 'Discover Venues' },
     { id: 'savings-section', label: 'Savings' }
   ];
 
@@ -38,15 +40,27 @@ export const Navigation: React.FC<NavigationProps> = ({
     }`}>
       <div className="max-w-7xl mx-auto px-6 sm:px-10 flex items-center justify-between">
         
-        {/* Brand Wordmark (DISHCOUNT Floating Logo) */}
-        <button
-          onClick={() => onNavigateSection('hero-section')}
-          className="text-left group"
-        >
-          <span className="font-serif text-xl sm:text-2xl tracking-[0.25em] text-[#F4EBDD] font-light uppercase block group-hover:text-[#C8A96B] transition-colors">
-            DISHCOUNT
-          </span>
-        </button>
+        {/* Brand Wordmark & Location Badge */}
+        <div className="flex items-center gap-6">
+          <button
+            onClick={() => onNavigateSection('hero-section')}
+            className="text-left group"
+          >
+            <span className="font-serif text-xl sm:text-2xl tracking-[0.25em] text-[#F4EBDD] font-light uppercase block group-hover:text-[#C8A96B] transition-colors">
+              DISHCOUNT
+            </span>
+          </button>
+
+          {/* Location Trigger Badge */}
+          <button
+            onClick={onChangeLocation}
+            title="Change or detect location"
+            className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#15100E] border border-[#C8A96B]/40 hover:border-[#C8A96B] text-[10px] font-sans text-[#C8A96B] font-semibold uppercase tracking-wider transition-colors shadow-lg"
+          >
+            <MapPin className="w-3 h-3 text-[#C8A96B]" />
+            <span className="max-w-[140px] truncate">{location}</span>
+          </button>
+        </div>
 
         {/* Center Minimal Navigation Links */}
         <nav className="hidden md:flex items-center gap-10">
@@ -63,6 +77,14 @@ export const Navigation: React.FC<NavigationProps> = ({
 
         {/* Right Controls: Search & Profile */}
         <div className="flex items-center gap-6 text-[#F4EBDD]/80">
+          <button
+            onClick={onChangeLocation}
+            title="Location"
+            className="sm:hidden hover:text-[#C8A96B] transition-colors p-1 text-[#C8A96B]"
+          >
+            <MapPin className="w-4 h-4 stroke-[1.5]" />
+          </button>
+
           <button
             onClick={() => onNavigateSection('hero-section')}
             title="Search food"

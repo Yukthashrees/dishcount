@@ -8,6 +8,7 @@ import { HeroSearch } from './components/HeroSearch';
 import { TruePriceComparison } from './components/TruePriceComparison';
 import { MultiRestaurantSearchResults } from './components/MultiRestaurantSearchResults';
 import { RestaurantMenuModal } from './components/RestaurantMenuModal';
+import { LocationModal } from './components/LocationModal';
 import { SmartChoiceSelector } from './components/SmartChoiceSelector';
 import { PriceHistoryChart } from './components/PriceHistoryChart';
 import { MoodLineSpectrum } from './components/MoodLineSpectrum';
@@ -29,7 +30,7 @@ import { TruePriceEngine } from './services/truePriceEngine';
 
 export function App() {
   const [showIntro, setShowIntro] = useState(true);
-  const [location, setLocation] = useState('Bengaluru');
+  const [location, setLocation] = useState('Indiranagar, Bengaluru');
   const [searchQuery, setSearchQuery] = useState('');
 
   // Active Selected Dish
@@ -49,6 +50,7 @@ export function App() {
   const [isPriceAlertOpen, setIsPriceAlertOpen] = useState(false);
   const [isFavoritesOpen, setIsFavoritesOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [isLocationOpen, setIsLocationOpen] = useState(false);
 
   // Smooth Scroll
   useEffect(() => {
@@ -74,7 +76,7 @@ export function App() {
     setSearchQuery(query);
     const q = query.trim().toLowerCase();
 
-    // 1. Find all matching restaurants serving this dish/cuisine
+    // Find all matching restaurants serving this dish/cuisine
     const matchingRestaurants = DETAILED_RESTAURANTS.filter(r =>
       r.name.toLowerCase().includes(q) ||
       r.cuisine.some(c => c.toLowerCase().includes(q)) ||
@@ -83,7 +85,7 @@ export function App() {
 
     setSearchResultsRestaurants(matchingRestaurants.length > 0 ? matchingRestaurants : DETAILED_RESTAURANTS);
 
-    // 2. Set active dish comparison
+    // Set active dish comparison
     const matchedDish = MOCK_DISHES.find(
       d => d.name.toLowerCase().includes(q) || 
            d.category.toLowerCase().includes(q) ||
@@ -172,7 +174,7 @@ export function App() {
       {/* Minimal Header Navigation */}
       <Navigation
         location={location}
-        onChangeLocation={() => setLocation(location === 'Bengaluru' ? 'Mumbai' : 'Bengaluru')}
+        onChangeLocation={() => setIsLocationOpen(true)}
         onOpenFavorites={() => setIsFavoritesOpen(true)}
         onOpenProfile={() => setIsAuthOpen(true)}
         onNavigateSection={handleNavigateSection}
@@ -187,10 +189,10 @@ export function App() {
           setSearchQuery={setSearchQuery}
           onExecuteSearch={handleExecuteSearch}
           location={location}
-          onChangeLocation={() => setLocation(location === 'Bengaluru' ? 'Mumbai' : 'Bengaluru')}
+          onChangeLocation={() => setIsLocationOpen(true)}
         />
 
-        {/* Multi-Restaurant Search Results View (Requirement 2) */}
+        {/* Multi-Restaurant Search Results View */}
         {searchQuery && (
           <div id="search-results-section">
             <MultiRestaurantSearchResults
@@ -234,12 +236,13 @@ export function App() {
         {/* Group Order Calculator */}
         <GroupOrderCalculator />
 
-        {/* Restaurant Discovery ("Where Should You Eat?") (Requirement 1) */}
+        {/* Restaurant & Venue Discovery (Restaurants, Breweries, Cafes, Fine Dining) */}
         <RestaurantDiscovery
           restaurants={DETAILED_RESTAURANTS}
+          userLocation={location}
+          onOpenLocationModal={() => setIsLocationOpen(true)}
           onSelectRestaurant={(rest) => {
-            const detailed = DETAILED_RESTAURANTS.find(r => r.id === rest.id) || DETAILED_RESTAURANTS[0];
-            setSelectedMenuRestaurant(detailed);
+            setSelectedMenuRestaurant(rest);
           }}
         />
 
@@ -256,7 +259,7 @@ export function App() {
         onCompareDish={(dishName) => handleExecuteSearch(dishName)}
       />
 
-      {/* Full Restaurant Menu Booklet Modal (Requirement 1) */}
+      {/* Full Restaurant Menu Booklet Modal */}
       <RestaurantMenuModal
         restaurant={selectedMenuRestaurant}
         isOpen={!!selectedMenuRestaurant}
@@ -265,6 +268,14 @@ export function App() {
           setActiveDish(dish);
           handleNavigateSection('compare-section');
         }}
+      />
+
+      {/* Location Modal (Live GPS & Area Search) */}
+      <LocationModal
+        isOpen={isLocationOpen}
+        currentLocation={location}
+        onClose={() => setIsLocationOpen(false)}
+        onSelectLocation={(newLoc) => setLocation(newLoc)}
       />
 
       {/* Price Alert Modal */}

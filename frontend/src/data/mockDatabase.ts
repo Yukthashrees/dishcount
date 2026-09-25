@@ -14,6 +14,10 @@ export interface MenuItem {
 }
 
 export interface DetailedRestaurant extends Restaurant {
+  venueType: 'RESTAURANT' | 'BREWERY' | 'CAFE' | 'FINE_DINING';
+  moods: ('Quiet' | 'Romantic' | 'Cozy' | 'Social' | 'Celebrate' | 'Late Night')[];
+  area: string;
+  isFamous: boolean;
   menuCategories: string[];
   fullMenu: MenuItem[];
 }
@@ -43,7 +47,7 @@ export const MOCK_DISHES: Dish[] = [
   },
   {
     id: 'dish-2',
-    restaurantId: 'rest-2',
+    restaurantId: 'rest-4',
     restaurantName: 'La Piazza Trattoria',
     name: 'Cheesy Truffle Pizza',
     description: '72-hour sourdough crust, San Marzano tomatoes, fresh burrata, wild porcini & black truffle oil.',
@@ -61,7 +65,7 @@ export const MOCK_DISHES: Dish[] = [
   },
   {
     id: 'dish-3',
-    restaurantId: 'rest-3',
+    restaurantId: 'rest-[#cafe-1]',
     restaurantName: 'Subko Craft Bakehouse',
     name: 'Single Origin Iced Cold Brew',
     description: 'Double shot specialty espresso extracted over oat milk paired with warm house cardamom knot.',
@@ -79,14 +83,19 @@ export const MOCK_DISHES: Dish[] = [
 ];
 
 export const DETAILED_RESTAURANTS: DetailedRestaurant[] = [
+  // RESTAURANTS
   {
     id: 'rest-1',
     name: 'Empire Restaurant',
     cuisine: ['Hyderabadi', 'Biryani', 'Kathi Rolls', 'Mughlai'],
     location: 'Koramangala, Bengaluru',
-    distance: '2.4 km',
+    area: 'Koramangala',
+    distance: '0.8 km',
     rating: 4.8,
     ratingCount: '3.2k',
+    venueType: 'RESTAURANT',
+    moods: ['Late Night', 'Social', 'Cozy'],
+    isFamous: true,
     image: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=1200&q=80',
     bestPlatform: 'Magicpin',
     startingFinalPrice: 307,
@@ -95,11 +104,7 @@ export const DETAILED_RESTAURANTS: DetailedRestaurant[] = [
     fullMenu: [
       { id: 'm1', name: 'Chicken Dum Biryani', description: 'Aged long-grain Basmati rice with succulent chicken & saffron ghee.', category: 'Biryani Specialties', price: 320, rating: 4.8, isVeg: false, image: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=800&q=80', bestPlatform: 'Magicpin', bestPrice: 307 },
       { id: 'm2', name: 'Empire Special Chicken Kathi Roll', description: 'Flaky paratha loaded with spiced grilled chicken tikka, eggs & green chutney.', category: 'Starters & Rolls', price: 210, rating: 4.7, isVeg: false, image: 'https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=800&q=80', bestPlatform: 'Magicpin', bestPrice: 195 },
-      { id: 'm3', name: 'Paneer Tikka Roll', description: 'Charcoal grilled cottage cheese cubes wrapped in layered rumali roti.', category: 'Starters & Rolls', price: 190, rating: 4.6, isVeg: true, image: 'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?auto=format&fit=crop&w=800&q=80', bestPlatform: 'SWISH', bestPrice: 178 },
-      { id: 'm4', name: 'Mutton Shahi Biryani', description: 'Tender lamb chops layered with aromatic spiced basmati rice and saffron.', category: 'Biryani Specialties', price: 420, rating: 4.9, isVeg: false, image: 'https://images.unsplash.com/photo-1589302168068-964664d93dc0?auto=format&fit=crop&w=800&q=80', bestPlatform: 'Zomato', bestPrice: 395 },
-      { id: 'm5', name: 'Butter Chicken Masala', description: 'Velvety rich tomato butter gravy infused with roasted fenugreek & cream.', category: 'Main Course Curry', price: 340, rating: 4.8, isVeg: false, image: 'https://images.unsplash.com/photo-1588166524941-3bf61a9c41db?auto=format&fit=crop&w=800&q=80', bestPlatform: 'EatSure', bestPrice: 310 },
-      { id: 'm6', name: 'Garlic Butter Naan', description: 'Tandoor baked soft flatbread brushed with fresh garlic & melted butter.', category: 'Breads & Accompaniments', price: 65, rating: 4.5, isVeg: true, image: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=800&q=80', bestPlatform: 'Magicpin', bestPrice: 55 },
-      { id: 'm7', name: 'Royal Shahi Tukda', description: 'Crispy fried bread soaked in saffron rabri topped with silver foil & pistachio.', category: 'Beverages & Desserts', price: 150, rating: 4.9, isVeg: true, image: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&w=800&q=80', bestPlatform: 'Swiggy', bestPrice: 135 }
+      { id: 'm3', name: 'Paneer Tikka Roll', description: 'Charcoal grilled cottage cheese cubes wrapped in layered rumali roti.', category: 'Starters & Rolls', price: 190, rating: 4.6, isVeg: true, image: 'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?auto=format&fit=crop&w=800&q=80', bestPlatform: 'SWISH', bestPrice: 178 }
     ]
   },
   {
@@ -107,57 +112,197 @@ export const DETAILED_RESTAURANTS: DetailedRestaurant[] = [
     name: 'Meghana Foods',
     cuisine: ['Andhra Biryani', 'Spicy Andhra', 'Chicken Specialties'],
     location: 'Indiranagar, Bengaluru',
-    distance: '1.9 km',
+    area: 'Indiranagar',
+    distance: '1.4 km',
     rating: 4.9,
     ratingCount: '5.8k',
+    venueType: 'RESTAURANT',
+    moods: ['Social', 'Late Night', 'Cozy'],
+    isFamous: true,
     image: 'https://images.unsplash.com/photo-1589302168068-964664d93dc0?auto=format&fit=crop&w=1200&q=80',
     bestPlatform: 'SWISH',
     startingFinalPrice: 295,
     popularDishes: [MOCK_DISHES[0]],
-    menuCategories: ['Biryani Special', 'Andhra Starters', 'Curries & Meals', 'Beverages'],
+    menuCategories: ['Biryani Special', 'Andhra Starters', 'Curries & Meals'],
     fullMenu: [
       { id: 'mf1', name: 'Meghana Special Chicken Biryani', description: 'Signature spicy Guntur chili chicken layered with aromatic rice.', category: 'Biryani Special', price: 330, rating: 4.9, isVeg: false, image: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=800&q=80', bestPlatform: 'SWISH', bestPrice: 295 },
-      { id: 'mf2', name: 'Boneless Chicken 65', description: 'Deep fried crispy chicken cubes tossed in spicy curry leaves & yogurt.', category: 'Andhra Starters', price: 290, rating: 4.8, isVeg: false, image: 'https://images.unsplash.com/photo-1610057099443-fde8c4d50f91?auto=format&fit=crop&w=800&q=80', bestPlatform: 'Magicpin', bestPrice: 260 },
-      { id: 'mf3', name: 'Paneer Biryani', description: 'Marinated cottage cheese cooked with aromatic Andhra green chili gravy.', category: 'Biryani Special', price: 290, rating: 4.7, isVeg: true, image: 'https://images.unsplash.com/photo-1631452180519-c014fe946bc7?auto=format&fit=crop&w=800&q=80', bestPlatform: 'Zomato', bestPrice: 270 },
-      { id: 'mf4', name: 'Guntur Chili Chicken Fry', description: 'Fiery dry chicken fry infused with ground red chilies & peppercorns.', category: 'Andhra Starters', price: 310, rating: 4.9, isVeg: false, image: 'https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=800&q=80', bestPlatform: 'EatSure', bestPrice: 285 }
+      { id: 'mf2', name: 'Boneless Chicken 65', description: 'Deep fried crispy chicken cubes tossed in spicy curry leaves & yogurt.', category: 'Andhra Starters', price: 290, rating: 4.8, isVeg: false, image: 'https://images.unsplash.com/photo-1610057099443-fde8c4d50f91?auto=format&fit=crop&w=800&q=80', bestPlatform: 'Magicpin', bestPrice: 260 }
     ]
   },
   {
     id: 'rest-3',
-    name: 'Kathi Roll Express & Wraps',
-    cuisine: ['Rolls', 'Street Food', 'Kebab Wraps'],
-    location: 'HSR Layout, Bengaluru',
-    distance: '1.5 km',
-    rating: 4.7,
-    ratingCount: '2.1k',
-    image: 'https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=1200&q=80',
-    bestPlatform: 'SWISH',
-    startingFinalPrice: 165,
+    name: 'Nagarjuna Restaurant',
+    cuisine: ['Andhra Meals', 'Biryani', 'Traditional South Indian'],
+    location: 'Indiranagar, Bengaluru',
+    area: 'Indiranagar',
+    distance: '1.1 km',
+    rating: 4.8,
+    ratingCount: '4.2k',
+    venueType: 'RESTAURANT',
+    moods: ['Social', 'Cozy'],
+    isFamous: true,
+    image: 'https://images.unsplash.com/photo-1610057099443-fde8c4d50f91?auto=format&fit=crop&w=1200&q=80',
+    bestPlatform: 'Zomato',
+    startingFinalPrice: 280,
     popularDishes: [],
-    menuCategories: ['Kolkata Kathi Rolls', 'Gourmet Wraps', 'Combos & Beverages'],
+    menuCategories: ['Andhra Thali Meals', 'Biryani', 'Starters'],
     fullMenu: [
-      { id: 'kr1', name: 'Double Egg Double Chicken Roll', description: 'Crispy laccha paratha with double spiced chicken tikka & dual egg coating.', category: 'Kolkata Kathi Rolls', price: 220, rating: 4.8, isVeg: false, image: 'https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=800&q=80', bestPlatform: 'SWISH', bestPrice: 185 },
-      { id: 'kr2', name: 'Paneer Makhani Kathi Roll', description: 'Tender cottage cheese tikka with rich makhani gravy wrapped in flaky flatbread.', category: 'Kolkata Kathi Rolls', price: 180, rating: 4.7, isVeg: true, image: 'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?auto=format&fit=crop&w=800&q=80', bestPlatform: 'Magicpin', bestPrice: 155 },
-      { id: 'kr3', name: 'Mutton Seekh Kebab Wrap', description: 'Charcoal grilled minced lamb kebabs with mint chutney & pickled onions.', category: 'Gourmet Wraps', price: 250, rating: 4.9, isVeg: false, image: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=800&q=80', bestPlatform: 'Zomato', bestPrice: 220 }
+      { id: 'ng1', name: 'Nagarjuna Royal Andhra Meal', description: 'Banana leaf feast with spicy pappu, sambar, rasam, curries, & pure ghee.', category: 'Andhra Thali Meals', price: 290, rating: 4.9, isVeg: true, image: 'https://images.unsplash.com/photo-1610057099443-fde8c4d50f91?auto=format&fit=crop&w=800&q=80', bestPlatform: 'Zomato', bestPrice: 260 }
+    ]
+  },
+
+  // BREWERIES & CRAFT PUBS
+  {
+    id: 'brew-1',
+    name: 'Toit Brewpub',
+    cuisine: ['Craft Beer', 'Woodfired Pizza', 'Brewery Eats', 'Continental'],
+    location: 'Indiranagar, Bengaluru',
+    area: 'Indiranagar',
+    distance: '1.2 km',
+    rating: 4.9,
+    ratingCount: '8.4k',
+    venueType: 'BREWERY',
+    moods: ['Social', 'Romantic', 'Celebrate', 'Late Night'],
+    isFamous: true,
+    image: 'https://images.unsplash.com/photo-1514933651103-005eec06c04b?auto=format&fit=crop&w=1200&q=80',
+    bestPlatform: 'Zomato',
+    startingFinalPrice: 380,
+    popularDishes: [],
+    menuCategories: ['Brewery Bites', 'Woodfired Pizza', 'Burgers & Mains', 'Desserts'],
+    fullMenu: [
+      { id: 'tb1', name: 'Toit BBQ Chicken Wings', description: 'House craft ale glazed chicken wings served with creamy blue cheese dip.', category: 'Brewery Bites', price: 340, rating: 4.9, isVeg: false, image: 'https://images.unsplash.com/photo-1527477396000-e27163b481c2?auto=format&fit=crop&w=800&q=80', bestPlatform: 'Zomato', bestPrice: 310 },
+      { id: 'tb2', name: 'Tintin Toit Sourdough Pizza', description: 'Woodfired thin crust pizza topped with smoked chicken, jalapenos & melted mozzarella.', category: 'Woodfired Pizza', price: 490, rating: 4.9, isVeg: false, image: 'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=800&q=80', bestPlatform: 'Swiggy', bestPrice: 440 }
     ]
   },
   {
-    id: 'rest-4',
-    name: 'La Piazza Trattoria',
-    cuisine: ['Italian', 'Woodfired Pizza', 'Artisanal Pasta'],
+    id: 'brew-2',
+    name: 'Windmills Craftworks',
+    cuisine: ['Craft Microbrewery', 'Jazz & Fine Dining', 'Gourmet Mains'],
+    location: 'Whitefield, Bengaluru',
+    area: 'Whitefield',
+    distance: '4.5 km',
+    rating: 4.9,
+    ratingCount: '4.1k',
+    venueType: 'BREWERY',
+    moods: ['Romantic', 'Quiet', 'Celebrate'],
+    isFamous: true,
+    image: 'https://images.unsplash.com/photo-1572116469696-31de0f17cc34?auto=format&fit=crop&w=1200&q=80',
+    bestPlatform: 'EatSure',
+    startingFinalPrice: 450,
+    popularDishes: [],
+    menuCategories: ['Craft Ale Pairing', 'Gourmet Steaks & Mains', 'Artisanal Desserts'],
+    fullMenu: [
+      { id: 'wm1', name: 'Hefeweizen Braised Pork Ribs', description: 'Slow cooked pork ribs in wheat beer reduction with truffle mash.', category: 'Gourmet Steaks & Mains', price: 650, rating: 4.9, isVeg: false, image: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&q=80', bestPlatform: 'EatSure', bestPrice: 590 }
+    ]
+  },
+
+  // CAFES & ROMANTIC / QUIET BAKEHOUSES
+  {
+    id: 'cafe-1',
+    name: 'Subko Craft Bakehouse',
+    cuisine: ['Artisanal Coffee', 'Croissants', 'Quiet Bakery', 'Breakfast'],
     location: 'Indiranagar, Bengaluru',
+    area: 'Indiranagar',
+    distance: '0.6 km',
+    rating: 4.9,
+    ratingCount: '1.9k',
+    venueType: 'CAFE',
+    moods: ['Quiet', 'Romantic', 'Cozy'],
+    isFamous: true,
+    image: 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&w=1200&q=80',
+    bestPlatform: 'Swiggy',
+    startingFinalPrice: 232,
+    popularDishes: [MOCK_DISHES[2]],
+    menuCategories: ['Specialty Coffee', 'Artisanal Viennoiserie', 'Sourdough Toasties'],
+    fullMenu: [
+      { id: 'sk1', name: 'Single Origin Iced Cold Brew', description: 'Double shot specialty espresso extracted over oat milk paired with warm house cardamom knot.', category: 'Specialty Coffee', price: 280, rating: 4.9, isVeg: true, image: 'https://images.unsplash.com/photo-1461023058943-07fcbe16d735?auto=format&fit=crop&w=800&q=80', bestPlatform: 'Swiggy', bestPrice: 232 },
+      { id: 'sk2', name: 'Almond Butter Chocolate Croissant', description: '72-layer flaky French butter croissant stuffed with dark Belgian chocolate.', category: 'Artisanal Viennoiserie', price: 220, rating: 4.9, isVeg: true, image: 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=800&q=80', bestPlatform: 'SWISH', bestPrice: 195 }
+    ]
+  },
+  {
+    id: 'cafe-2',
+    name: "Glen's Bakehouse",
+    cuisine: ['European Bakery', 'Red Velvet', 'Romantic Garden Cafe'],
+    location: 'Indiranagar, Bengaluru',
+    area: 'Indiranagar',
+    distance: '1.0 km',
+    rating: 4.8,
+    ratingCount: '6.2k',
+    venueType: 'CAFE',
+    moods: ['Romantic', 'Quiet', 'Cozy'],
+    isFamous: true,
+    image: 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=1200&q=80',
+    bestPlatform: 'Magicpin',
+    startingFinalPrice: 195,
+    popularDishes: [],
+    menuCategories: ['Signature Cupcakes', 'Handcrafted Pastas', 'Savoury Quiche'],
+    fullMenu: [
+      { id: 'gb1', name: 'Mini Red Velvet Cupcakes (Set of 4)', description: 'Iconic soft red velvet cupcakes with whipped cream cheese frosting.', category: 'Signature Cupcakes', price: 160, rating: 4.9, isVeg: true, image: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&w=800&q=80', bestPlatform: 'Magicpin', bestPrice: 140 }
+    ]
+  },
+  {
+    id: 'cafe-3',
+    name: 'Third Wave Coffee',
+    cuisine: ['Artisanal Coffee', 'Warm Sandwiches', 'Cozy Cafe Workspaces'],
+    location: 'HSR Layout, Bengaluru',
+    area: 'HSR Layout',
+    distance: '1.3 km',
+    rating: 4.7,
+    ratingCount: '3.4k',
+    venueType: 'CAFE',
+    moods: ['Quiet', 'Cozy'],
+    isFamous: false,
+    image: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=1200&q=80',
+    bestPlatform: 'SWISH',
+    startingFinalPrice: 210,
+    popularDishes: [],
+    menuCategories: ['Espresso & Brews', 'Gourmet Sandwiches'],
+    fullMenu: [
+      { id: 'tw1', name: 'Vietnamese Shaken Iced Coffee', description: 'Condensed milk espresso shaken over ice cubes.', category: 'Espresso & Brews', price: 230, rating: 4.8, isVeg: true, image: 'https://images.unsplash.com/photo-1461023058943-07fcbe16d735?auto=format&fit=crop&w=800&q=80', bestPlatform: 'SWISH', bestPrice: 195 }
+    ]
+  },
+
+  // FINE DINING & ROMANTIC SPOTS
+  {
+    id: 'fine-1',
+    name: 'La Piazza Trattoria',
+    cuisine: ['Italian Fine Dining', 'Woodfired Pizza', 'Wine Pairing'],
+    location: 'Indiranagar, Bengaluru',
+    area: 'Indiranagar',
     distance: '3.1 km',
     rating: 4.9,
     ratingCount: '1.8k',
+    venueType: 'FINE_DINING',
+    moods: ['Romantic', 'Celebrate', 'Quiet'],
+    isFamous: true,
     image: 'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=1200&q=80',
     bestPlatform: 'Zomato',
     startingFinalPrice: 389,
     popularDishes: [MOCK_DISHES[1]],
-    menuCategories: ['Woodfired Pizza', 'Handmade Pasta', 'Antipasti & Salads', 'Italian Desserts'],
+    menuCategories: ['Woodfired Pizza', 'Handmade Pasta', 'Italian Desserts'],
     fullMenu: [
-      { id: 'lp1', name: 'Cheesy Truffle Pizza', description: 'Sourdough crust, fresh burrata, wild porcini & black truffle oil.', category: 'Woodfired Pizza', price: 480, rating: 4.9, isVeg: true, image: 'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=800&q=80', bestPlatform: 'Zomato', bestPrice: 389 },
-      { id: 'lp2', name: 'Fettuccine Creamy Alfredo', description: 'Fresh egg pasta tossed in aged Parmigiano Reggiano & butter cream sauce.', category: 'Handmade Pasta', price: 420, rating: 4.8, isVeg: true, image: 'https://images.unsplash.com/photo-1645112411341-6c4fd023714a?auto=format&fit=crop&w=800&q=80', bestPlatform: 'Swiggy', bestPrice: 370 },
-      { id: 'lp3', name: 'Woodfired Pepperoni Feast', description: 'Neapolitan dough topped with spicy pork pepperoni & fior di latte mozzarella.', category: 'Woodfired Pizza', price: 540, rating: 4.9, isVeg: false, image: 'https://images.unsplash.com/photo-1628840042765-356cda07504e?auto=format&fit=crop&w=800&q=80', bestPlatform: 'EatSure', bestPrice: 480 }
+      { id: 'lp1', name: 'Cheesy Truffle Pizza', description: 'Sourdough crust, fresh burrata, wild porcini & black truffle oil.', category: 'Woodfired Pizza', price: 480, rating: 4.9, isVeg: true, image: 'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=800&q=80', bestPlatform: 'Zomato', bestPrice: 389 }
+    ]
+  },
+  {
+    id: 'fine-2',
+    name: 'Chianti Ristorante',
+    cuisine: ['Tuscan Fine Dining', 'Candlelight Dinner', 'Handmade Gnocchi'],
+    location: 'Koramangala, Bengaluru',
+    area: 'Koramangala',
+    distance: '1.6 km',
+    rating: 4.9,
+    ratingCount: '2.5k',
+    venueType: 'FINE_DINING',
+    moods: ['Romantic', 'Celebrate', 'Quiet'],
+    isFamous: true,
+    image: 'https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=1200&q=80',
+    bestPlatform: 'Zomato',
+    startingFinalPrice: 460,
+    popularDishes: [],
+    menuCategories: ['Antipasti', 'Tuscan Pasta', 'Tiramisu'],
+    fullMenu: [
+      { id: 'ch1', name: 'Homemade Truffle Gnocchi', description: 'Soft potato gnocchi tossed in creamy sage butter & grated parmesan.', category: 'Tuscan Pasta', price: 520, rating: 4.9, isVeg: true, image: 'https://images.unsplash.com/photo-1645112411341-6c4fd023714a?auto=format&fit=crop&w=800&q=80', bestPlatform: 'Zomato', bestPrice: 460 }
     ]
   }
 ];
