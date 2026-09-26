@@ -27,6 +27,7 @@ import { Footer } from './components/Footer';
 import { MOCK_DISHES, DETAILED_RESTAURANTS, DetailedRestaurant } from './data/mockDatabase';
 import { Dish, ChoiceMode } from './types';
 import { TruePriceEngine } from './services/truePriceEngine';
+import { RAGSearchEngine } from './services/ragSearchEngine';
 
 export function App() {
   const [showIntro, setShowIntro] = useState(true);
@@ -78,19 +79,53 @@ export function App() {
     handleNavigateSection('discover-section');
   };
 
-  // Smart Real-World Category Search Handler
+  // RAG Dynamic Knowledge Retrieval Search Handler
   const handleExecuteSearch = (query: string) => {
     setSearchQuery(query);
     const q = query.trim().toLowerCase();
 
-    // 1. Filter restaurants matching query in name, cuisine, or menu item
+    // 1. Query RAG Knowledge Base first for specialized items like "sushi", "ramen", "jamun", "tacos"
+    const ragMatches = RAGSearchEngine.searchKnowledgeBase(q);
+    
+    if (ragMatches && ragMatches.length > 0) {
+      setSearchResultsRestaurants(ragMatches);
+
+      // Set active dish from RAG result
+      const ragItem = ragMatches[0].fullMenu[0];
+      const convertedDish: Dish = {
+        id: ragItem.id,
+        restaurantId: ragMatches[0].id,
+        restaurantName: ragMatches[0].name,
+        name: ragItem.name,
+        description: ragItem.description,
+        category: ragItem.category,
+        basePrice: ragItem.price,
+        image: ragItem.image,
+        rating: ragItem.rating,
+        deliveryTimeAvg: '22 mins',
+        priceRange: `₹${ragItem.bestPrice} – ₹${ragItem.price + 45}`,
+        comparison: [
+          { platformId: 'magicpin', platformName: 'Magicpin', logo: '🟣', status: 'BEST PRICE', statusDetail: 'Best rate tonight', basePrice: ragItem.price, restaurantDiscount: 30, couponDiscount: 25, deliveryFee: 20, platformFee: 4, taxes: 12, packagingFee: 10, cashback: 15, finalPayablePrice: ragItem.bestPrice, couponCode: 'SUPERPIN60', deliveryTimeMinutes: 24, dealScore: 98, scoreReason: 'Cheapest rate' },
+          { platformId: 'swish', platformName: 'SWISH', logo: '⚡', status: 'FASTEST', statusDetail: '10 min delivery', basePrice: ragItem.price, restaurantDiscount: 20, couponDiscount: 10, deliveryFee: 15, platformFee: 3, taxes: 12, packagingFee: 10, cashback: 0, finalPayablePrice: ragItem.bestPrice + 12, couponCode: 'SWISH10M', deliveryTimeMinutes: 10, dealScore: 94, scoreReason: 'Fastest delivery' },
+          { platformId: 'zomato', platformName: 'Zomato', logo: '🔴', status: 'AVAILABLE', statusDetail: 'Gold deal', basePrice: ragItem.price, restaurantDiscount: 25, couponDiscount: 15, deliveryFee: 30, platformFee: 5, taxes: 12, packagingFee: 10, cashback: 0, finalPayablePrice: ragItem.bestPrice + 25, couponCode: 'ZOMGOLD', deliveryTimeMinutes: 22, dealScore: 90, scoreReason: 'Gold discount' },
+          { platformId: 'swiggy', platformName: 'Swiggy', logo: '🟠', status: 'AVAILABLE', statusDetail: 'Swiggy One', basePrice: ragItem.price, restaurantDiscount: 20, couponDiscount: 10, deliveryFee: 35, platformFee: 6, taxes: 12, packagingFee: 10, cashback: 0, finalPayablePrice: ragItem.bestPrice + 38, couponCode: 'SWIGGYIT', deliveryTimeMinutes: 25, dealScore: 84, scoreReason: 'Standard deal' }
+        ]
+      };
+      setActiveDish(convertedDish);
+
+      const el = document.getElementById('search-results-section') || document.getElementById('compare-section');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+      return;
+    }
+
+    // 2. Filter restaurants matching query in name, cuisine, or menu item
     let matchingRestaurants = DETAILED_RESTAURANTS.filter(r =>
       r.name.toLowerCase().includes(q) ||
       r.cuisine.some(c => c.toLowerCase().includes(q)) ||
       r.fullMenu.some(m => m.name.toLowerCase().includes(q) || m.category.toLowerCase().includes(q))
     );
 
-    // 2. Smart Category Fallbacks for generic searches like "dessert", "coffee", "ramen", "sandwich"
+    // 3. Smart Category Fallbacks for generic searches like "dessert", "coffee", "sandwich"
     if (matchingRestaurants.length === 0) {
       if (q.includes('dessert') || q.includes('sweet') || q.includes('cake') || q.includes('ice cream')) {
         matchingRestaurants = DETAILED_RESTAURANTS.filter(r =>
@@ -107,7 +142,7 @@ export function App() {
 
     setSearchResultsRestaurants(matchingRestaurants);
 
-    // 3. Set Active Dish Comparison
+    // Set Active Dish Comparison
     const matchedDish = MOCK_DISHES.find(
       d => d.name.toLowerCase().includes(q) || 
            d.category.toLowerCase().includes(q) ||
