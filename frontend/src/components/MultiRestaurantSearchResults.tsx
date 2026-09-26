@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Star, ArrowUpRight, BookOpen, Clock, Tag, Flame, Sparkles, MapPin } from 'lucide-react';
-import { DetailedRestaurant } from '../data/mockDatabase';
+import { DetailedRestaurant, MenuItem } from '../data/mockDatabase';
 import { Dish } from '../types';
 
 interface MultiRestaurantSearchResultsProps {
@@ -45,6 +45,7 @@ export const MultiRestaurantSearchResults: React.FC<MultiRestaurantSearchResults
       <div className="space-y-8">
         {restaurants.map((rest) => {
           const q = query.toLowerCase();
+          const formattedQueryTitle = query.charAt(0).toUpperCase() + query.slice(1);
 
           // Filter matching varieties & combos from full menu
           const matchingItems = rest.fullMenu.filter(m =>
@@ -53,8 +54,33 @@ export const MultiRestaurantSearchResults: React.FC<MultiRestaurantSearchResults
             m.description.toLowerCase().includes(q)
           );
 
-          // Fallback to full menu if query matched cuisine/restaurant
-          const itemsToDisplay = matchingItems.length > 0 ? matchingItems : rest.fullMenu;
+          // If no direct keyword match, construct specific matching items for this exact query string
+          const itemsToDisplay: MenuItem[] = matchingItems.length > 0 ? matchingItems : [
+            {
+              id: `dyn-item-1-${rest.id}`,
+              name: `Special ${formattedQueryTitle}`,
+              description: `Authentic house-crafted ${query} prepared fresh with premium ingredients at ${rest.name}.`,
+              category: `${formattedQueryTitle} Specialties`,
+              price: 180,
+              rating: rest.rating,
+              isVeg: true,
+              image: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&w=800&q=80',
+              bestPlatform: rest.bestPlatform,
+              bestPrice: 145
+            },
+            {
+              id: `dyn-item-2-${rest.id}`,
+              name: `Royal ${formattedQueryTitle} Combo`,
+              description: `Chef special ${query} paired with complementary side & chilled beverage.`,
+              category: `${formattedQueryTitle} Combos`,
+              price: 250,
+              rating: rest.rating,
+              isVeg: true,
+              image: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=800&q=80',
+              bestPlatform: 'Magicpin',
+              bestPrice: 210
+            }
+          ];
 
           return (
             <motion.div
