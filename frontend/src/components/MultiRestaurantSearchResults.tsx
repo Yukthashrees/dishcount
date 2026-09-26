@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Star, ArrowUpRight, BookOpen, Clock, Tag, Flame } from 'lucide-react';
-import { DetailedRestaurant, MenuItem } from '../data/mockDatabase';
+import { Star, ArrowUpRight, BookOpen, Clock, Tag, Flame, Sparkles, MapPin } from 'lucide-react';
+import { DetailedRestaurant } from '../data/mockDatabase';
 import { Dish } from '../types';
 
 interface MultiRestaurantSearchResultsProps {
@@ -26,18 +26,18 @@ export const MultiRestaurantSearchResults: React.FC<MultiRestaurantSearchResults
         <div>
           <div className="flex items-center gap-2 text-[10px] tracking-[0.25em] font-sans text-[#C8A96B] uppercase font-semibold mb-1">
             <Flame className="w-3.5 h-3.5 text-[#C8A96B]" />
-            <span>REAL-TIME DISH & COMBOS LOOKUP FOR "{query.toUpperCase()}"</span>
+            <span>REAL-TIME DISH LOOKUP FOR "{query.toUpperCase()}"</span>
           </div>
           <h3 className="font-serif text-3xl sm:text-4xl font-light text-[#F4EBDD] uppercase tracking-wide">
-            AVAILABLE AT {restaurants.length} RESTAURANTS
+            AVAILABLE AT {restaurants.length} RESTAURANTS & CAFES
           </h3>
           <p className="text-xs font-sans text-[#8A7E76] font-light mt-1">
-            Explore varieties, meal combos, base prices, active promo codes & platform delivery times.
+            Compare varieties, meal combos, true prices, promo codes & dining aesthetics / moods.
           </p>
         </div>
 
         <div className="px-4 py-2 rounded-xl bg-[#0D0B0A] border border-[#C8A96B]/30 text-xs font-sans text-[#C8A96B] uppercase tracking-wider font-semibold shrink-0 text-center">
-          {restaurants.length} RESTAURANTS SERVING {query.toUpperCase()}
+          {restaurants.length} VENUES SERVING {query.toUpperCase()}
         </div>
       </div>
 
@@ -53,8 +53,8 @@ export const MultiRestaurantSearchResults: React.FC<MultiRestaurantSearchResults
             m.description.toLowerCase().includes(q)
           );
 
-          // If no direct keyword match, fall back to top menu items
-          const itemsToDisplay = matchingItems.length > 0 ? matchingItems : rest.fullMenu.slice(0, 3);
+          // Fallback to full menu if query matched cuisine/restaurant
+          const itemsToDisplay = matchingItems.length > 0 ? matchingItems : rest.fullMenu;
 
           return (
             <motion.div
@@ -62,20 +62,28 @@ export const MultiRestaurantSearchResults: React.FC<MultiRestaurantSearchResults
               whileHover={{ y: -2 }}
               className="rounded-2xl bg-[#15100E] border border-white/10 hover:border-[#C8A96B]/50 transition-all p-6 sm:p-8 shadow-2xl relative overflow-hidden group"
             >
-              {/* Top Row: Restaurant Info Header */}
+              {/* Top Row: Restaurant Info Header & Aesthetic / Mood Badges */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-white/05 mb-6">
-                <div className="flex items-center gap-4">
+                <div className="flex items-start sm:items-center gap-4">
                   <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden border border-[#C8A96B]/40 shrink-0">
                     <img src={rest.image} alt={rest.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
                   </div>
 
                   <div>
-                    <div className="flex items-center gap-3 text-xs font-sans mb-1">
+                    <div className="flex items-center gap-2 mb-1 flex-wrap">
                       <span className="text-[10px] tracking-widest text-[#C8A96B] uppercase font-semibold">{rest.cuisine[0]}</span>
                       <span className="text-[#8A7E76]">•</span>
-                      <span className="flex items-center gap-1 text-[#F4EBDD] font-sans font-semibold">
+                      <span className="flex items-center gap-1 text-[#F4EBDD] font-sans font-semibold text-xs">
                         <Star className="w-3.5 h-3.5 fill-[#C8A96B] text-[#C8A96B]" /> {rest.rating} ({rest.ratingCount})
                       </span>
+
+                      {/* Aesthetic / Mood Badges */}
+                      {rest.moods?.map(mood => (
+                        <span key={mood} className="px-2 py-0.5 rounded-full bg-[#C8A96B]/15 border border-[#C8A96B]/40 text-[9px] font-sans text-[#C8A96B] font-semibold uppercase tracking-wider flex items-center gap-1">
+                          <Sparkles className="w-2.5 h-2.5" />
+                          <span>{mood} Aesthetic</span>
+                        </span>
+                      ))}
                     </div>
 
                     <h4 className="font-serif text-2xl sm:text-3xl font-light text-[#F4EBDD] uppercase tracking-wide group-hover:text-[#C8A96B] transition-colors">
@@ -83,7 +91,7 @@ export const MultiRestaurantSearchResults: React.FC<MultiRestaurantSearchResults
                     </h4>
 
                     <p className="text-xs font-sans text-[#8A7E76] font-light mt-0.5 flex items-center gap-2">
-                      <span>{rest.location}</span>
+                      <span className="flex items-center gap-1"><MapPin className="w-3 h-3 text-[#C8A96B]" /> {rest.location}</span>
                       <span>•</span>
                       <span className="flex items-center gap-1 text-[#C8A96B]"><Clock className="w-3 h-3" /> 22m avg delivery</span>
                     </p>
@@ -95,15 +103,15 @@ export const MultiRestaurantSearchResults: React.FC<MultiRestaurantSearchResults
                   className="px-5 py-2.5 rounded-lg bg-[#0D0B0A] border border-[#C8A96B]/40 hover:border-[#C8A96B] text-[#C8A96B] text-xs font-semibold uppercase tracking-wider transition-colors flex items-center gap-2 shrink-0 self-start sm:self-auto"
                 >
                   <BookOpen className="w-4 h-4" />
-                  <span>VIEW ALL {rest.fullMenu.length} MENU ITEMS</span>
+                  <span>VIEW FULL {rest.fullMenu.length} ITEM MENU</span>
                 </button>
               </div>
 
               {/* Varieties & Combos List for this Restaurant */}
               <div className="space-y-4">
                 <div className="text-[10px] tracking-[0.2em] uppercase font-sans text-[#8A7E76] font-semibold flex items-center justify-between">
-                  <span>VARIETIES & COMBOS AVAILABLE ({itemsToDisplay.length})</span>
-                  <span>BEST PAYABLE PRICE</span>
+                  <span>{query.toUpperCase()} VARIETIES & COMBOS ({itemsToDisplay.length})</span>
+                  <span>BEST PAYABLE RATE</span>
                 </div>
 
                 {itemsToDisplay.map((item) => (
@@ -112,7 +120,7 @@ export const MultiRestaurantSearchResults: React.FC<MultiRestaurantSearchResults
                     className="p-4 rounded-xl bg-[#0D0B0A] border border-white/05 hover:border-[#C8A96B]/30 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4"
                   >
                     <div className="flex items-start gap-3">
-                      <div className="w-14 h-14 rounded-lg overflow-hidden border border-white/10 shrink-0">
+                      <div className="w-16 h-16 rounded-lg overflow-hidden border border-white/10 shrink-0">
                         <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
                       </div>
 
@@ -121,12 +129,12 @@ export const MultiRestaurantSearchResults: React.FC<MultiRestaurantSearchResults
                           <span className={`w-2.5 h-2.5 rounded-full border flex items-center justify-center text-[7px] ${item.isVeg ? 'border-green-500 text-green-500' : 'border-red-500 text-red-500'}`}>●</span>
                           <span className="font-serif text-base font-light text-[#F4EBDD] uppercase tracking-wide">{item.name}</span>
                         </div>
-                        <p className="text-xs font-sans text-[#8A7E76] font-light line-clamp-1">{item.description}</p>
+                        <p className="text-xs font-sans text-[#8A7E76] font-light max-w-lg line-clamp-2">{item.description}</p>
                         
                         {/* Offer / Coupon Badge */}
                         <div className="inline-flex items-center gap-1.5 mt-2 px-2.5 py-0.5 rounded bg-[#4F8A70]/20 border border-[#4F8A70]/40 text-[10px] font-sans text-[#4F8A70] font-semibold uppercase tracking-wider">
                           <Tag className="w-3 h-3" />
-                          <span>Code: SUPERPIN60 — Extra Cashback Valid</span>
+                          <span>Code: SUPERPIN60 — Active Cashback Offer</span>
                         </div>
                       </div>
                     </div>
@@ -135,7 +143,7 @@ export const MultiRestaurantSearchResults: React.FC<MultiRestaurantSearchResults
                     <div className="flex items-center justify-between sm:justify-end gap-6 pt-2 sm:pt-0 border-t sm:border-t-0 border-white/05 shrink-0">
                       <div className="text-left sm:text-right">
                         <span className="text-[10px] font-sans text-[#8A7E76] line-through block">Menu: ₹{item.price}</span>
-                        <span className="font-sans text-xl font-bold text-[#F4EBDD]">₹{item.bestPrice}</span>
+                        <span className="font-sans text-2xl font-bold text-[#F4EBDD]">₹{item.bestPrice}</span>
                         <span className="text-[10px] font-sans text-[#4F8A70] block font-semibold uppercase">Best on {item.bestPlatform}</span>
                       </div>
 
@@ -162,7 +170,7 @@ export const MultiRestaurantSearchResults: React.FC<MultiRestaurantSearchResults
                           };
                           onSelectDishForComparison(convertedDish);
                         }}
-                        className="px-4 py-2 rounded bg-[#C8A96B] text-[#080706] hover:bg-[#b59557] text-xs font-semibold uppercase tracking-wider transition-colors flex items-center gap-1.5 shadow-lg"
+                        className="px-4 py-2.5 rounded-lg bg-[#C8A96B] text-[#080706] hover:bg-[#b59557] text-xs font-semibold uppercase tracking-wider transition-colors flex items-center gap-1.5 shadow-lg"
                       >
                         <span>COMPARE PLATFORMS</span>
                         <ArrowUpRight className="w-3.5 h-3.5" />
