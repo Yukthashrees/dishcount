@@ -78,21 +78,36 @@ export function App() {
     handleNavigateSection('discover-section');
   };
 
-  // Dynamic Search Handler for Dish & Multi-Restaurant Lookup
+  // Smart Real-World Category Search Handler
   const handleExecuteSearch = (query: string) => {
     setSearchQuery(query);
     const q = query.trim().toLowerCase();
 
-    // Find all matching restaurants serving this dish/cuisine
-    const matchingRestaurants = DETAILED_RESTAURANTS.filter(r =>
+    // 1. Filter restaurants matching query in name, cuisine, or menu item
+    let matchingRestaurants = DETAILED_RESTAURANTS.filter(r =>
       r.name.toLowerCase().includes(q) ||
       r.cuisine.some(c => c.toLowerCase().includes(q)) ||
       r.fullMenu.some(m => m.name.toLowerCase().includes(q) || m.category.toLowerCase().includes(q))
     );
 
-    setSearchResultsRestaurants(matchingRestaurants.length > 0 ? matchingRestaurants : DETAILED_RESTAURANTS);
+    // 2. Smart Category Fallbacks for generic searches like "dessert", "coffee", "ramen", "sandwich"
+    if (matchingRestaurants.length === 0) {
+      if (q.includes('dessert') || q.includes('sweet') || q.includes('cake') || q.includes('ice cream')) {
+        matchingRestaurants = DETAILED_RESTAURANTS.filter(r =>
+          r.id.includes('cafe') || r.cuisine.some(c => c.includes('Bakery') || c.includes('Dessert') || c.includes('Coffee'))
+        );
+      } else if (q.includes('sandwich') || q.includes('toast') || q.includes('burger')) {
+        matchingRestaurants = DETAILED_RESTAURANTS.filter(r =>
+          r.name.includes('Subko') || r.name.includes('Third Wave') || r.name.includes('Glen') || r.name.includes('Subway') || r.name.includes('Truffles')
+        );
+      } else {
+        matchingRestaurants = DETAILED_RESTAURANTS.slice(0, 4);
+      }
+    }
 
-    // Set active dish comparison
+    setSearchResultsRestaurants(matchingRestaurants);
+
+    // 3. Set Active Dish Comparison
     const matchedDish = MOCK_DISHES.find(
       d => d.name.toLowerCase().includes(q) || 
            d.category.toLowerCase().includes(q) ||
@@ -107,14 +122,14 @@ export function App() {
 
       const dynamicDish: Dish = {
         id: `dynamic-${Date.now()}`,
-        name: formattedTitle.includes('Roll') || formattedTitle.includes('roll') ? formattedTitle : `${formattedTitle} Special`,
-        restaurantName: matchingRestaurants.length > 0 ? matchingRestaurants[0].name : 'Empire & Specialty Kitchens',
-        category: 'Popular Specialty',
-        cuisine: 'Street Food & Gourmet',
+        name: formattedTitle.includes('Roll') || formattedTitle.includes('roll') ? formattedTitle : `Signature ${formattedTitle}`,
+        restaurantName: matchingRestaurants.length > 0 ? matchingRestaurants[0].name : 'Specialty Kitchens',
+        category: `${formattedTitle} Gourmet`,
+        cuisine: 'Specialty Eats',
         basePrice: basePrice,
-        image: 'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?auto=format&fit=crop&w=800&q=80',
+        image: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&w=800&q=80',
         rating: 4.8,
-        description: `Signature fresh ${query} prepared with premium ingredients and authentic culinary spices.`,
+        description: `Freshly prepared authentic ${query} served with premium ingredients and house signature condiments.`,
         comparison: [
           { platformId: 'magicpin', platformName: 'Magicpin', logo: '🟣', status: 'BEST PRICE', statusDetail: 'Highest active discount', basePrice: basePrice, restaurantDiscount: 30, couponDiscount: 25, deliveryFee: 20, platformFee: 4, taxes: 11, packagingFee: 10, cashback: 15, finalPayablePrice: basePrice - 5, deliveryTimeMinutes: 22, available: true, couponCode: 'MAGICPIN50', scoreReason: 'Cheapest overall rate' },
           { platformId: 'swish', platformName: 'SWISH', logo: '⚡', status: 'FASTEST', statusDetail: '10-minute dispatch', basePrice: basePrice, restaurantDiscount: 20, couponDiscount: 10, deliveryFee: 15, platformFee: 3, taxes: 11, packagingFee: 10, cashback: 0, finalPayablePrice: basePrice + 4, deliveryTimeMinutes: 10, available: true, couponCode: 'SWISHFAST', scoreReason: '10-minute lightning dispatch' },
