@@ -33,8 +33,9 @@ export function App() {
   const [location, setLocation] = useState('Indiranagar, Bengaluru');
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Active Selected Dish
+  // Active Selected Dish & Active Mood Filter
   const [activeDish, setActiveDish] = useState<Dish>(MOCK_DISHES[0]);
+  const [activeMoodFilter, setActiveMoodFilter] = useState<string>('ALL');
 
   // Full Restaurant Menu Modal State
   const [selectedMenuRestaurant, setSelectedMenuRestaurant] = useState<DetailedRestaurant | null>(null);
@@ -70,6 +71,12 @@ export function App() {
       lenis.destroy();
     };
   }, []);
+
+  // Handle Mood Selection from Spectrum
+  const handleSelectMoodFromSpectrum = (mood: string) => {
+    setActiveMoodFilter(mood);
+    handleNavigateSection('discover-section');
+  };
 
   // Dynamic Search Handler for Dish & Multi-Restaurant Lookup
   const handleExecuteSearch = (query: string) => {
@@ -226,7 +233,9 @@ export function App() {
         <PriceHistoryChart />
 
         {/* Interactive Mood Spectrum */}
-        <MoodLineSpectrum />
+        <MoodLineSpectrum
+          onSelectMood={handleSelectMoodFromSpectrum}
+        />
 
         {/* Food Decision System ("Not Sure What To Order?") */}
         <DecisionWizard
@@ -236,10 +245,11 @@ export function App() {
         {/* Group Order Calculator */}
         <GroupOrderCalculator />
 
-        {/* Restaurant & Venue Discovery (Restaurants, Breweries, Cafes, Fine Dining) */}
+        {/* Top-Rated Restaurant & Venue Discovery (Ranked by Rating & Location) */}
         <RestaurantDiscovery
           restaurants={DETAILED_RESTAURANTS}
           userLocation={location}
+          activeMoodFromParent={activeMoodFilter}
           onOpenLocationModal={() => setIsLocationOpen(true)}
           onSelectRestaurant={(rest) => {
             setSelectedMenuRestaurant(rest);

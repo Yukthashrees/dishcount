@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowUpRight, MapPin, Sparkles, Star, Compass } from 'lucide-react';
 import { DetailedRestaurant } from '../data/mockDatabase';
@@ -6,6 +6,7 @@ import { DetailedRestaurant } from '../data/mockDatabase';
 interface RestaurantDiscoveryProps {
   restaurants: DetailedRestaurant[];
   userLocation: string;
+  activeMoodFromParent?: string;
   onOpenLocationModal: () => void;
   onSelectRestaurant: (rest: DetailedRestaurant) => void;
 }
@@ -13,12 +14,19 @@ interface RestaurantDiscoveryProps {
 export const RestaurantDiscovery: React.FC<RestaurantDiscoveryProps> = ({
   restaurants,
   userLocation,
+  activeMoodFromParent,
   onOpenLocationModal,
   onSelectRestaurant
 }) => {
   const [selectedMood, setSelectedMood] = useState<string>('ALL');
   const [selectedVenueType, setSelectedVenueType] = useState<string>('ALL');
   const [distanceMode, setDistanceMode] = useState<'NEARBY' | 'FAMOUS' | 'ALL'>('ALL');
+
+  useEffect(() => {
+    if (activeMoodFromParent) {
+      setSelectedMood(activeMoodFromParent);
+    }
+  }, [activeMoodFromParent]);
 
   const MOODS = ['ALL', 'Quiet', 'Romantic', 'Cozy', 'Social', 'Celebrate', 'Late Night'];
   const VENUE_TYPES = [
@@ -29,14 +37,17 @@ export const RestaurantDiscovery: React.FC<RestaurantDiscoveryProps> = ({
     { id: 'FINE_DINING', label: 'Fine Dining' }
   ];
 
-  const filteredVenues = restaurants.filter(v => {
-    const matchesMood = selectedMood === 'ALL' || (v.moods && v.moods.includes(selectedMood as any));
-    const matchesVenueType = selectedVenueType === 'ALL' || v.venueType === selectedVenueType;
-    const matchesDistance = distanceMode === 'ALL' || 
-                            (distanceMode === 'NEARBY' && parseFloat(v.distance) <= 2.0) ||
-                            (distanceMode === 'FAMOUS' && v.isFamous);
-    return matchesMood && matchesVenueType && matchesDistance;
-  });
+  // Filter and sort by highest rating (4.9 ★, 4.8 ★ first)
+  const filteredVenues = restaurants
+    .filter(v => {
+      const matchesMood = selectedMood === 'ALL' || (v.moods && v.moods.includes(selectedMood as any));
+      const matchesVenueType = selectedVenueType === 'ALL' || v.venueType === selectedVenueType;
+      const matchesDistance = distanceMode === 'ALL' || 
+                              (distanceMode === 'NEARBY' && parseFloat(v.distance) <= 2.0) ||
+                              (distanceMode === 'FAMOUS' && v.isFamous);
+      return matchesMood && matchesVenueType && matchesDistance;
+    })
+    .sort((a, b) => b.rating - a.rating);
 
   return (
     <section id="discover-section" className="py-24 px-6 sm:px-12 max-w-7xl mx-auto overflow-hidden">
@@ -44,9 +55,9 @@ export const RestaurantDiscovery: React.FC<RestaurantDiscoveryProps> = ({
       {/* Editorial Header */}
       <div className="mb-10 border-b border-[#C8A96B]/20 pb-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
-          <div className="flex items-center gap-3 mb-2">
+          <div className="flex items-center gap-3 mb-2 flex-wrap">
             <span className="text-[10px] tracking-[0.25em] font-sans text-[#C8A96B] uppercase font-semibold">
-              DINING & VENUE DISCOVERY
+              TOP RATED DINING DISCOVERY
             </span>
             <button
               onClick={onOpenLocationModal}
@@ -55,12 +66,20 @@ export const RestaurantDiscovery: React.FC<RestaurantDiscoveryProps> = ({
               <MapPin className="w-3 h-3 text-[#C8A96B]" />
               <span>{userLocation}</span>
             </button>
+
+            {selectedMood !== 'ALL' && (
+              <span className="px-3 py-1 rounded-full bg-[#C8A96B]/20 border border-[#C8A96B] text-[10px] font-sans text-[#F4EBDD] font-semibold uppercase tracking-wider flex items-center gap-1">
+                <Sparkles className="w-3 h-3 text-[#C8A96B]" />
+                <span>ACTIVE MOOD: {selectedMood.toUpperCase()}</span>
+              </span>
+            )}
           </div>
+
           <h2 className="font-serif text-4xl sm:text-6xl font-light text-[#F4EBDD] uppercase tracking-wide">
-            WHERE SHOULD YOU EAT?
+            {selectedMood !== 'ALL' ? `TOP RATED ${selectedMood.toUpperCase()} VENUES` : 'WHERE SHOULD YOU EAT?'}
           </h2>
           <p className="text-xs font-sans text-[#8A7E76] font-light mt-1">
-            Discover nearby quiet cafes, romantic candlelit dinners, famous craft microbreweries & restaurants.
+            Highest rated restaurants, quiet cafes & famous craft microbreweries near {userLocation}.
           </p>
         </div>
 
@@ -98,7 +117,7 @@ export const RestaurantDiscovery: React.FC<RestaurantDiscoveryProps> = ({
       {/* Mood Selector Tabs */}
       <div className="mb-6 space-y-3">
         <span className="text-[10px] tracking-[0.2em] uppercase font-sans text-[#8A7E76] font-semibold block">
-          SELECT DINING MOOD
+          SELECT DINING MOOD / AESTHETIC
         </span>
         <div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
           {MOODS.map((mood) => (
@@ -184,7 +203,7 @@ export const RestaurantDiscovery: React.FC<RestaurantDiscoveryProps> = ({
                 <div>
                   <div className="flex items-center justify-between text-xs font-sans text-[#8A7E76] mb-1">
                     <span className="text-[#C8A96B] uppercase font-semibold">{rest.cuisine[0]}</span>
-                    <span className="flex items-center gap-1 text-[#F4EBDD]"><Star className="w-3.5 h-3.5 fill-[#C8A96B] text-[#C8A96B]" /> {rest.rating} ({rest.ratingCount})</span>
+                    <span className="flex items-center gap-1 text-[#F4EBDD] font-bold"><Star className="w-3.5 h-3.5 fill-[#C8A96B] text-[#C8A96B]" /> {rest.rating} ({rest.ratingCount})</span>
                   </div>
 
                   <h3 className="font-serif text-2xl font-light uppercase tracking-wider text-[#F4EBDD] group-hover:text-[#C8A96B] transition-colors mb-2">
@@ -198,8 +217,8 @@ export const RestaurantDiscovery: React.FC<RestaurantDiscoveryProps> = ({
                   {/* Mood Tags */}
                   <div className="flex flex-wrap gap-1.5 mb-6">
                     {rest.moods?.map(m => (
-                      <span key={m} className="px-2.5 py-0.5 rounded bg-[#0D0B0A] border border-white/05 text-[10px] font-sans text-[#8A7E76] uppercase">
-                        {m}
+                      <span key={m} className={`px-2.5 py-0.5 rounded text-[10px] font-sans uppercase ${selectedMood === m ? 'bg-[#C8A96B]/20 border border-[#C8A96B] text-[#C8A96B] font-semibold' : 'bg-[#0D0B0A] border border-white/05 text-[#8A7E76]'}`}>
+                        {m} Aesthetic
                       </span>
                     ))}
                   </div>

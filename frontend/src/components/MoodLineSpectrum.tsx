@@ -1,13 +1,17 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-export const MoodLineSpectrum: React.FC = () => {
+interface MoodLineSpectrumProps {
+  onSelectMood: (mood: string) => void;
+}
+
+export const MoodLineSpectrum: React.FC<MoodLineSpectrumProps> = ({ onSelectMood }) => {
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
 
   const MOODS = [
     {
       id: 'quiet',
-      label: 'QUIET',
+      label: 'Quiet',
       subtext: 'slow coffee / artisanal bake / morning light',
       image: 'https://images.unsplash.com/photo-1445116572660-236099ec97a0?auto=format&fit=crop&w=1600&q=85',
       royalColor: '#C8A96B', // Imperial Gold
@@ -15,7 +19,7 @@ export const MoodLineSpectrum: React.FC = () => {
     },
     {
       id: 'cozy',
-      label: 'COZY',
+      label: 'Cozy',
       subtext: 'warm ramen bowl / comfort food / rain',
       image: 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=1600&q=85',
       royalColor: '#B86B4B', // Warm Copper
@@ -23,7 +27,7 @@ export const MoodLineSpectrum: React.FC = () => {
     },
     {
       id: 'social',
-      label: 'SOCIAL',
+      label: 'Social',
       subtext: 'artisanal pizza / friends / shared feast',
       image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=1600&q=85',
       royalColor: '#E63946', // Ruby Crimson
@@ -31,7 +35,7 @@ export const MoodLineSpectrum: React.FC = () => {
     },
     {
       id: 'romantic',
-      label: 'ROMANTIC',
+      label: 'Romantic',
       subtext: 'candlelight dinner / fine wine / intimate',
       image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1600&q=85',
       royalColor: '#9B51E0', // Royal Amethyst
@@ -39,7 +43,7 @@ export const MoodLineSpectrum: React.FC = () => {
     },
     {
       id: 'celebrate',
-      label: 'CELEBRATE',
+      label: 'Celebrate',
       subtext: 'royal fine dining / champagne / luxury',
       image: 'https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?auto=format&fit=crop&w=1600&q=85',
       royalColor: '#4F8A70', // Deep Emerald
@@ -47,7 +51,7 @@ export const MoodLineSpectrum: React.FC = () => {
     },
     {
       id: 'latenight',
-      label: 'LATE NIGHT',
+      label: 'Late Night',
       subtext: 'saffron biryani / post-midnight feast',
       image: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=1600&q=85',
       royalColor: '#D4AF37', // Royal Gold
@@ -55,10 +59,10 @@ export const MoodLineSpectrum: React.FC = () => {
     }
   ];
 
-  const activeMood = hoveredIdx !== null ? MOODS[hoveredIdx] : MOODS[2];
+  const activeMood = hoveredIdx !== null ? MOODS[hoveredIdx] : MOODS[3];
 
   return (
-    <section id="discover-section" className="relative py-32 px-6 sm:px-12 max-w-7xl mx-auto overflow-hidden rounded-2xl my-12 border border-[#C8A96B]/30 shadow-[0_20px_80px_rgba(0,0,0,0.9)]">
+    <section className="relative py-32 px-6 sm:px-12 max-w-7xl mx-auto overflow-hidden rounded-2xl my-12 border border-[#C8A96B]/30 shadow-[0_20px_80px_rgba(0,0,0,0.9)]">
       
       {/* Dynamic Vibrant Rich Background Picture Reveal on Hover */}
       <div className="absolute inset-0 z-0 pointer-events-none">
@@ -102,7 +106,7 @@ export const MoodLineSpectrum: React.FC = () => {
           WHAT ARE YOU IN THE MOOD FOR?
         </h2>
         <p className="text-xs font-sans text-[#F4EBDD]/80 font-light mt-2 tracking-wider uppercase">
-          Hover across the spectrum to illuminate curated dining experiences
+          Hover across the spectrum & click to discover top-rated venues in your location
         </p>
       </div>
 
@@ -116,10 +120,7 @@ export const MoodLineSpectrum: React.FC = () => {
                 key={mood.id}
                 onMouseEnter={() => setHoveredIdx(idx)}
                 onMouseLeave={() => setHoveredIdx(null)}
-                onClick={() => {
-                  const el = document.getElementById('compare-section');
-                  if (el) el.scrollIntoView({ behavior: 'smooth' });
-                }}
+                onClick={() => onSelectMood(mood.label)}
                 className={`py-12 px-5 transition-all duration-400 flex flex-col items-center justify-between min-h-[260px] group relative ${
                   isHovered 
                     ? 'bg-[#15100E]/90 shadow-[inset_0_0_30px_rgba(200,169,107,0.2)]' 
@@ -159,7 +160,7 @@ export const MoodLineSpectrum: React.FC = () => {
                       : 'opacity-0 text-[#C8A96B]'
                   }`}
                 >
-                  EXPLORE →
+                  DISCOVER VENUES →
                 </span>
               </button>
             );
@@ -187,13 +188,10 @@ export const MoodLineSpectrum: React.FC = () => {
         </div>
 
         <button
-          onClick={() => {
-            const el = document.getElementById('compare-section');
-            if (el) el.scrollIntoView({ behavior: 'smooth' });
-          }}
+          onClick={() => onSelectMood(activeMood.label)}
           className="px-6 py-2.5 rounded bg-[#C8A96B] text-[#080706] font-sans text-xs font-semibold uppercase tracking-wider hover:bg-[#b59557] transition-colors shrink-0 shadow-lg"
         >
-          COMPARE {activeMood.label} DISHES
+          DISCOVER TOP RATED {activeMood.label.toUpperCase()} VENUES
         </button>
       </div>
 
